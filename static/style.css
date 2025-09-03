@@ -1,55 +1,143 @@
-body { font-family: 'Inter', sans-serif; }
+body { 
+    font-family: 'Inter', sans-serif; 
+}
 
+/* Primary Button */
 .btn-primary {
-    background: #1A8596;
+    background: #004c97; /* Primary Blue */
     color: white;
     transition: all 0.3s ease;
     font-weight: 500;
 }
 .btn-primary:hover {
-    background: #115562;
+    background: #0072ce; /* Lighter Blue for Hover */
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(26, 133, 150, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 114, 206, 0.3); /* Soft blue shadow */
 }
 
+/* Secondary Button */
 .btn-secondary {
-    background: #DDE9EE;
-    color: #115562;
+    background: #7aa6d6; /* Light Blue Accent */
+    color: #004c97; /* Dark Blue for contrast */
     transition: all 0.3s ease;
     font-weight: 500;
 }
 .btn-secondary:hover {
-    background: #c8d6dc;
+    background: #5b89c4; /* Slightly darker blue for hover */
     transform: translateY(-1px);
 }
 
+/* Hero Section */
 .hero-gradient {
-    background: linear-gradient(135deg, #f8fafc 0%, #DDE9EE 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #7aa6d6 100%); /* Smooth gradient from white to light blue */
 }
 
-.text-primary { color: #1A8596; }
-.text-secondary { color: #115562; }
-.bg-light-accent { background: #DDE9EE; }
+/* Text Colors */
+.text-primary { 
+    color: #004c97; /* Primary Blue for headings and main text */
+}
+.text-secondary { 
+    color: #6f7d89; /* Muted gray-blue for secondary text */
+}
 
+/* Background Accent */
+.bg-light-accent { 
+    background: #f8f9fa; /* Very light gray for subtle background areas */
+}
+
+/* Navigation Link */
 .nav-link {
-    color: #374151;
+    color: #6f7d89; /* Muted gray-blue for regular state */
     transition: color 0.2s ease;
 }
-.nav-link:hover { color: #1A8596; }
+.nav-link:hover { 
+    color: #004c97; /* Primary Blue for hover state */
+}
 
+/* Feature Cards */
 .feature-card {
     background: white;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #e2e8f0; /* Light gray border */
     transition: all 0.3s ease;
 }
 .feature-card:hover {
-    border-color: #1A8596;
+    border-color: #004c97; /* Primary Blue for hover border */
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(26, 133, 150, 0.15);
+    box-shadow: 0 12px 30px rgba(0, 76, 151, 0.15); /* Soft blue shadow */
 }
 
+/* Icon Container */
 .icon-container {
-    background: #DDE9EE;
-    color: #1A8596;
+    background: #f8f9fa; /* Light background for icon container */
+    color: #004c97; /* Primary Blue for icon color */
     transition: all 0.3s ease;
+}
+
+/* Styling the "How It Works" section */
+#how-it-works {
+    background: #f8fafc; /* Light background for contrast */
+    padding: 5rem 0;
+}
+
+/* Styling the Step Cards */
+.step-card {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.step-card:hover {
+    background: #e5f2ff; /* Soft light blue on hover */
+    transform: translateY(-10px); /* Slight lifting effect */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+}
+
+/* Number Circle (Step Indicator) */
+.step-number {
+    background-color: #004c97; /* Primary Blue */
+    color: white;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.step-card:hover .step-number {
+    transform: rotate(360deg); /* Rotating the number slightly on hover */
+}
+
+/* Title and Description */
+.step-card h3 {
+    font-size: 1.25rem;
+    color: #2d3748; /* Dark gray for the heading */
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.step-card p {
+    font-size: 1rem;
+    color: #4a5568; /* Muted gray for body text */
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .step-card {
+        padding: 3rem 2rem;
+    }
+
+    .step-card h3 {
+        font-size: 1.5rem;
+    }
+
+    .step-card p {
+        font-size: 1.125rem;
+    }
 }
