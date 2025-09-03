@@ -1,19 +1,55 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    text-align: center;
-    margin: 0;
-    padding: 50px;
+body { font-family: 'Inter', sans-serif; }
+
+.btn-primary {
+    background: #1A8596;
+    color: white;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+.btn-primary:hover {
+    background: #115562;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(26, 133, 150, 0.3);
 }
 
-.container {
+.btn-secondary {
+    background: #DDE9EE;
+    color: #115562;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+.btn-secondary:hover {
+    background: #c8d6dc;
+    transform: translateY(-1px);
+}
+
+.hero-gradient {
+    background: linear-gradient(135deg, #f8fafc 0%, #DDE9EE 100%);
+}
+
+.text-primary { color: #1A8596; }
+.text-secondary { color: #115562; }
+.bg-light-accent { background: #DDE9EE; }
+
+.nav-link {
+    color: #374151;
+    transition: color 0.2s ease;
+}
+.nav-link:hover { color: #1A8596; }
+
+.feature-card {
     background: white;
-    padding: 30px;
-    border-radius: 8px;
-    display: inline-block;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+.feature-card:hover {
+    border-color: #1A8596;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(26, 133, 150, 0.15);
 }
 
-h1 {
-    color: #007BFF;
+.icon-container {
+    background: #DDE9EE;
+    color: #1A8596;
+    transition: all 0.3s ease;
 }
