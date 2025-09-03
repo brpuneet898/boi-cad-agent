@@ -15,6 +15,7 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
 app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('EMAIL_USER')
 
 mail = Mail(app)
 
@@ -31,11 +32,17 @@ def contact():
         subject = request.form['subject']
         message = request.form['message']
         
+        # Check if email is configured
+        if not app.config['MAIL_USERNAME'] or not app.config['MAIL_PASSWORD']:
+            flash('Email service is not configured. Please contact us directly at brpuneet898@gmail.com', 'error')
+            return redirect(url_for('contact'))
+        
         # Create email message
         msg = Message(
             subject=f'ADPA Contact Form: {subject}',
             sender=app.config['MAIL_USERNAME'],
-            recipients=['brpuneet898@gmail.com']
+            recipients=['brpuneet898@gmail.com'],
+            reply_to=email
         )
         
         msg.body = f"""
@@ -43,22 +50,24 @@ New contact form submission from ADPA website:
 
 Name: {name}
 Email: {email}
-Company: {company}
+Company: {company or 'Not specified'}
 Subject: {subject}
 
 Message:
 {message}
 
 ---
+Reply to: {email}
 This email was sent from the ADPA contact form.
         """
         
         try:
             mail.send(msg)
-            flash('Your message has been sent successfully!', 'success')
+            flash('Your message has been sent successfully! We\'ll get back to you soon.', 'success')
         except Exception as e:
-            flash('There was an error sending your message. Please try again.', 'error')
+            flash('There was an error sending your message. Please email us directly at brpuneet898@gmail.com', 'error')
             print(f"Error sending email: {e}")
+            print(f"Mail config - Username: {app.config['MAIL_USERNAME']}, Password set: {bool(app.config['MAIL_PASSWORD'])}")
         
         return redirect(url_for('contact'))
     
