@@ -141,3 +141,161 @@ body {
         font-size: 1.125rem;
     }
 }
+
+/* Upload Widget Styles */
+.upload-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 76, 151, 0.1);
+}
+
+.upload-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 76, 151, 0.15);
+}
+
+/* Drop Zone Styles */
+#dropZone {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#dropZone:hover {
+    background-color: #f8fafc;
+    border-color: #0072ce;
+}
+
+#dropZone.border-blue-500 {
+    border-color: #0072ce !important;
+}
+
+#dropZone.bg-blue-50 {
+    background-color: #eff6ff !important;
+}
+
+/* Selected File Display */
+#selectedFile {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+/* Disabled Button State */
+.btn-primary:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-primary:disabled:hover {
+    background: #9ca3af;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Remove File Button */
+#removeFileBtn {
+    transition: all 0.2s ease;
+}
+
+#removeFileBtn:hover {
+    transform: scale(1.1);
+}
+
+/* Smooth transitions for show/hide */
+.hidden {
+    display: none !important;
+}
+
+/* File icon and text styling */
+.upload-card svg {
+    transition: all 0.3s ease;
+}
+
+.upload-card:hover svg {
+    transform: scale(1.05);
+}
+
+/* Field Cards Styles */
+.field-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.field-card:hover {
+    border-color: #004c97;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 76, 151, 0.15);
+}
+
+.field-name {
+    color: #004c97;
+    font-weight: 600;
+}
+
+.field-value {
+    line-height: 1.5;
+    min-height: 20px;
+}
+
+.edit-btn {
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+    background-color: #f8fafc;
+}
+
+.delete-btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Field input styles */
+.field-name-input,
+.field-value-input {
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.field-name-input:focus,
+.field-value-input:focus {
+    outline: none;
+    border-color: #004c97;
+    box-shadow: 0 0 0 3px rgba(0, 76, 151, 0.1);
+}
+
+/* Analysis results header */
+#analysisResults h2 {
+    color: #004c97;
+}
+
+/* Responsive grid for field cards */
+@media (max-width: 768px) {
+    #fieldsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    #fieldsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Smooth transitions for show/hide */
+.field-display,
+.field-edit {
+    transition: all 0.3s ease;
+}
+
+/* Button hover effects for field actions */
+.field-card button {
+    transition: all 0.2s ease;
+}
+
+.field-card button:hover {
+    transform: translateY(-1px);
+}
