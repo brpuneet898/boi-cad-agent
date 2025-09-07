@@ -1,214 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ADPA - AI Document Processing</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-</head>
-<body class="bg-white">
-
+    <link
+      href="{{ url_for('static', filename='style.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-white">
     <!-- Navigation -->
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex-shrink-0">
-                    <h1 class="text-xl font-bold text-primary">ADPA</h1>
-                    <p class="text-xs text-gray-600 -mt-1">AI Document Processing</p>
-                </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex-shrink-0">
+            <h1 class="text-xl font-bold text-primary">ADPA</h1>
+            <p class="text-xs text-gray-600 -mt-1">AI Document Processing</p>
+          </div>
 
-                <!-- Links -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#features" class="nav-link text-sm font-medium">Features</a>
-                        <a href="#how-it-works" class="nav-link text-sm font-medium">How It Works</a>
-                        <a href="#contact" class="nav-link text-sm font-medium">Contact</a>
-                    </div>
-                </div>
-
-                <!-- CTA -->
-                <div class="flex items-center">
-                    <button class="btn-primary px-4 py-2 rounded-lg text-sm">
-                        Get Started
-                    </button>
-                </div>
+          <!-- Links -->
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-8">
+              <a href="#features" class="nav-link text-sm font-medium"
+                >Features</a
+              >
+              <a href="#how-it-works" class="nav-link text-sm font-medium"
+                >How It Works</a
+              >
+              <a href="/contact" class="nav-link text-sm font-medium"
+                >Contact</a
+              >
             </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="flex items-center">
+            <button class="btn-primary px-4 py-2 rounded-lg text-sm">
+              Get Started
+            </button>
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero-gradient py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                Transform Your <span class="text-primary">CAD Documents</span><br>
-                Into Actionable Data
-            </h1>
-            <p class="text-xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
-                AI-powered document processing that extracts, validates, and structures technical drawings into standardized data formats. Streamline your manufacturing workflow with intelligent automation.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold">
-                    Upload Document
-                </button>
-                <button class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold">
-                    Watch Demo
-                </button>
-            </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          Transform Your <span class="text-primary">CAD Documents</span><br />
+          Into Actionable Data
+        </h1>
+        <p class="text-xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
+          AI-powered document processing that extracts, validates, and
+          structures technical drawings into standardized data formats.
+          Streamline your manufacturing workflow with intelligent automation.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold"
+          >
+            Upload Document
+          </button>
+          <button
+            class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold"
+          >
+            Watch Demo
+          </button>
         </div>
+      </div>
     </section>
 
     <!-- Features Section -->
     <section id="features" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Powerful Features</h2>
-            <p class="text-xl text-gray-700 max-w-2xl mx-auto">
-                Advanced AI technology meets manufacturing expertise to deliver unparalleled document processing capabilities.
-            </p>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Powerful Features</h2>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">
+          Advanced AI technology meets manufacturing expertise to deliver
+          unparalleled document processing capabilities.
+        </p>
+      </div>
+
+      <!-- Feature Cards -->
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-8"
+      >
+        <div class="feature-card p-8 rounded-xl">
+          <div
+            class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">
+            AI-Powered Extraction
+          </h3>
+          <p class="text-gray-700 leading-relaxed">
+            Automatically identify and extract key information from CAD
+            drawings, technical specifications, and manufacturing documents.
+          </p>
         </div>
-        
-        <!-- Feature Cards -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-8">
-            <div class="feature-card p-8 rounded-xl">
-                <div class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">AI-Powered Extraction</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Automatically identify and extract key information from CAD drawings, technical specifications, and manufacturing documents.
-                </p>
-            </div>
 
-            <div class="feature-card p-8 rounded-xl">
-                <div class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Smart Field Mapping</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Automatically categorizes extracted data into standard formats while identifying custom fields for validation.
-                </p>
-            </div>
-
-            <div class="feature-card p-8 rounded-xl">
-                <div class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Automated Actions</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Generate procurement orders, cost analyses, and manufacturing reports automatically with one-click workflows.
-                </p>
-            </div>
-
-            <div class="feature-card p-8 rounded-xl">
-                <div class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Interactive Chat</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Ask natural language questions about your documents. Get instant answers about dimensions, materials, and specifications.
-                </p>
-            </div>
-
-            <div class="feature-card p-8 rounded-xl">
-                <div class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Enterprise Security</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Bank-level encryption and compliance protocols ensure your sensitive manufacturing data remains protected.
-                </p>
-            </div>
-
-            <div class="feature-card p-8 rounded-xl">
-                <div class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Data Integration</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Seamlessly integrate with ERP, PLM, and manufacturing systems through robust APIs and standard data formats.
-                </p>
-            </div>
+        <div class="feature-card p-8 rounded-xl">
+          <div
+            class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">
+            Smart Field Mapping
+          </h3>
+          <p class="text-gray-700 leading-relaxed">
+            Automatically categorizes extracted data into standard formats while
+            identifying custom fields for validation.
+          </p>
         </div>
+
+        <div class="feature-card p-8 rounded-xl">
+          <div
+            class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">
+            Automated Actions
+          </h3>
+          <p class="text-gray-700 leading-relaxed">
+            Generate procurement orders, cost analyses, and manufacturing
+            reports automatically with one-click workflows.
+          </p>
+        </div>
+
+        <div class="feature-card p-8 rounded-xl">
+          <div
+            class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Interactive Chat</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Ask natural language questions about your documents. Get instant
+            answers about dimensions, materials, and specifications.
+          </p>
+        </div>
+
+        <div class="feature-card p-8 rounded-xl">
+          <div
+            class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">
+            Enterprise Security
+          </h3>
+          <p class="text-gray-700 leading-relaxed">
+            Bank-level encryption and compliance protocols ensure your sensitive
+            manufacturing data remains protected.
+          </p>
+        </div>
+
+        <div class="feature-card p-8 rounded-xl">
+          <div
+            class="icon-container w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          >
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Data Integration</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Seamlessly integrate with ERP, PLM, and manufacturing systems
+            through robust APIs and standard data formats.
+          </p>
+        </div>
+      </div>
     </section>
 
     <!-- How It Works -->
     <section id="how-it-works" class="py-20 bg-light-accent">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p class="text-xl text-gray-700 max-w-2xl mx-auto">
-                Simple three-step process to transform your documents into structured, actionable data.
-            </p>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+        <p class="text-xl text-gray-700 max-w-2xl mx-auto">
+          Simple three-step process to transform your documents into structured,
+          actionable data.
+        </p>
+      </div>
+
+      <!-- Steps Container -->
+      <div
+        class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 px-4 sm:px-6 lg:px-8"
+      >
+        <!-- Step 1 -->
+        <div
+          class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg"
+        >
+          <div
+            class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <span class="text-3xl font-bold">1</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Upload Documents</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Drag and drop your CAD drawings, PDFs, or technical specifications.
+            Supports PDF, PNG, JPG, and DWG files.
+          </p>
         </div>
-    
-        <!-- Steps Container -->
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 px-4 sm:px-6 lg:px-8">
-            
-            <!-- Step 1 -->
-            <div class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg">
-                <div class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span class="text-3xl font-bold">1</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Upload Documents</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Drag and drop your CAD drawings, PDFs, or technical specifications. Supports PDF, PNG, JPG, and DWG files.
-                </p>
-            </div>
-    
-            <!-- Step 2 -->
-            <div class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg">
-                <div class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span class="text-3xl font-bold">2</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">AI Processing</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Our advanced AI extracts key information and maps fields to standard formats. Review and validate as needed.
-                </p>
-            </div>
-    
-            <!-- Step 3 -->
-            <div class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg">
-                <div class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span class="text-3xl font-bold">3</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Generate Actions</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Create procurement orders, cost analyses, and reports with one click. Export data to your systems.
-                </p>
-            </div>            
+
+        <!-- Step 2 -->
+        <div
+          class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg"
+        >
+          <div
+            class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <span class="text-3xl font-bold">2</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">AI Processing</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Our advanced AI extracts key information and maps fields to standard
+            formats. Review and validate as needed.
+          </p>
         </div>
-    </section>
-    
-    <!-- CTA Section -->
-    <section id="contact" class="py-20 bg-white text-center">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-4xl font-bold text-gray-900 mb-6">Ready to Transform Your Workflow?</h2>
-            <p class="text-xl text-gray-700 mb-8 leading-relaxed">
-                Join hundreds of manufacturing teams who have streamlined their document processing with ADPA.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold">
-                    Start Free Trial
-                </button>
-                <button class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold">
-                    Schedule Demo
-                </button>
-            </div>
-            <p class="text-sm text-gray-600 mt-4">No credit card required • 14-day free trial • Cancel anytime</p>
+
+        <!-- Step 3 -->
+        <div
+          class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg"
+        >
+          <div
+            class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <span class="text-3xl font-bold">3</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Generate Actions</h3>
+          <p class="text-gray-700 leading-relaxed">
+            Create procurement orders, cost analyses, and reports with one
+            click. Export data to your systems.
+          </p>
         </div>
+      </div>
     </section>
 
-</body>
+    <!-- CTA Section -->
+    <section id="contact" class="py-20 bg-white text-center">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-bold text-gray-900 mb-6">
+          Ready to Transform Your Workflow?
+        </h2>
+        <p class="text-xl text-gray-700 mb-8 leading-relaxed">
+          Join hundreds of manufacturing teams who have streamlined their
+          document processing with ADPA.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold"
+          >
+            Start Free Trial
+          </button>
+          <button
+            class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold"
+          >
+            Schedule Demo
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">
+          No credit card required • 14-day free trial • Cancel anytime
+        </p>
+      </div>
+    </section>
+  </body>
 </html>
