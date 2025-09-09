@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analysis - ADPA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex-shrink-0">
+            <a href="/" class="flex flex-col">
+              <h1 class="text-xl font-bold text-blue-600">ADPA</h1>
+              <p class="text-xs text-gray-600 -mt-1">AI Document Processing</p>
+            </a>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-8">
+              <a href="/" class="nav-link hover:text-blue-600 text-sm font-medium">Home</a>
+              <a href="/#features" class="nav-link hover:text-blue-600 text-sm font-medium">Features</a>
+              <a href="/contact" class="nav-link hover:text-blue-600 text-sm font-medium">Contact</a>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              Get Started
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="analysis-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-12 gap-6">
+      <!-- Left column: Document History -->
+      <aside class="col-span-12 md:col-span-3 lg:col-span-3 scrollable-column">
+        <div class="bg-white rounded-xl shadow-sm sticky top-8">
+          <header class="section-header">
+            <h2>Document History</h2>
+            <div class="subtitle">Recently processed files</div>
+          </header>
+          
+          <div class="p-4">
+            <div id="docHistory" class="space-y-3">
+              {% for u in uploads %}
+              <div class="p-4 rounded-lg bg-gray-50 hover:bg-blue-50 transition-colors border border-gray-100">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="min-w-0">
+                    <div class="font-medium text-gray-900 truncate">{{ u.name }}</div>
+                    <div class="text-sm text-gray-500">Uploaded</div>
+                  </div>
+                  <a href="/analysis/{{ u.name }}" 
+                     class="flex-none text-sm font-medium text-blue-600 hover:text-blue-700">
+                    View Analysis
+                  </a>
+                </div>
+              </div>
+              {% else %}
+              <div class="text-sm text-gray-500 p-4">No recent documents</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Middle column: Analysis Details -->
+      <section class="col-span-12 md:col-span-6 lg:col-span-6 scrollable-column">
+        <div class="space-y-6">
+          <!-- Summary Card -->
+          <div class="bg-white rounded-xl shadow-sm">
+            <header class="section-header">
+              <div class="flex items-center justify-between">
+              <div>
+                <h2>Extraction Summary</h2>
+                <div class="subtitle">File: {{ filename }}</div>
+              </div>
+              <div class="confidence-indicator">
+                <span class="label">Confidence</span>
+                <span class="value">{{ metadata.confidence or '—' }}%</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="p-6">
+            <div class="grid grid-cols-3 gap-6">
+              <div class="bg-gray-50 rounded-xl p-4 text-center">
+                <div class="text-sm text-gray-500 mb-1">Fields Found</div>
+                <div class="text-2xl font-semibold text-gray-900">{{ analysis.fields|length }}</div>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4 text-center">
+                <div class="text-sm text-gray-500 mb-1">Processing</div>
+                <div class="text-2xl font-semibold text-gray-900">{{ metadata.processing_time_seconds }}s</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Extracted Fields -->
+        <div class="bg-white rounded-xl shadow-sm">
+          <header class="section-header">
+            <h2>Extracted Fields</h2>
+            <div class="subtitle">Information found in the document</div>
+          </header>
+          
+          <div class="p-6">
+            <div class="space-y-4" id="fieldsGrid">
+              {% for f in analysis.fields %}
+              <div class="bg-gray-50 hover:bg-blue-50 rounded-xl p-4 transition-colors">
+                <div class="grid grid-cols-12 gap-4 items-center">
+                  <div class="col-span-3">
+                    <div class="text-sm font-semibold text-gray-700">{{ f.name }}</div>
+                  </div>
+                  <div class="col-span-9">
+                    <div class="text-gray-900">{{ f.value }}</div>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="text-sm text-gray-500 p-4 text-center bg-gray-50 rounded-xl">
+                No fields have been extracted from this document.
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Metadata -->
+        <div class="bg-white rounded-xl shadow-sm">
+          <header class="section-header">
+            <h2>Document Metadata</h2>
+            <div class="subtitle">Technical details and processing information</div>
+          </header>
+          
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-8">
+              <div class="space-y-4">
+                <h3 class="font-medium text-gray-900">File Information</h3>
+                <dl class="space-y-2">
+                  <div class="flex justify-between">
+                    <dt class="text-sm text-gray-500">File Size</dt>
+                    <dd class="text-sm font-medium">{{ (metadata.file_size / (1024*1024))|round(2) }} MB</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-sm text-gray-500">Pages</dt>
+                    <dd class="text-sm font-medium">{{ extra.pages or '—' }}</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-sm text-gray-500">Format</dt>
+                    <dd class="text-sm font-medium">{{ filename.rsplit('.', 1)[1].upper() }}</dd>
+                  </div>
+                </dl>
+              </div>
+              
+              <div class="space-y-4">
+                <h3 class="font-medium text-gray-900">Processing Details</h3>
+                <dl class="space-y-2">
+                  <div class="flex justify-between">
+                    <dt class="text-sm text-gray-500">Processing Time</dt>
+                    <dd class="text-sm font-medium">{{ metadata.processing_time_seconds }} seconds</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-sm text-gray-500">AI Model</dt>
+                    <dd class="text-sm font-medium">{{ metadata.ai_model }}</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-sm text-gray-500">Confidence</dt>
+                    <dd class="text-sm font-medium">{{ metadata.confidence }}%</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-sm text-gray-500">Language</dt>
+                    <dd class="text-sm font-medium">{{ metadata.language }}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column: AI Chat -->
+      <aside class="col-span-12 md:col-span-3 lg:col-span-3 scrollable-column">
+        <div class="bg-white rounded-xl shadow-sm sticky top-8">
+          <header class="section-header">
+            <h2>AI Assistant</h2>
+            <div class="subtitle">Document analysis support</div>
+          </header>
+          
+          <div class="chat-section">
+            <div id="chatWindow" class="chat-window">
+              <div class="chat-status">
+                <svg class="w-2 h-2 fill-current" viewBox="0 0 8 8">
+                  <circle cx="4" cy="4" r="4"/>
+                </svg>
+                <span>AI Assistant Online</span>
+              </div>
+              
+              <div class="chat-message">
+                <div class="chat-bubble ai">
+                  I've analyzed your CAD drawing and extracted the relevant fields. How can I help you understand this document better?
+                </div>
+              </div>
+            </div>
+
+            <form id="chatForm" class="chat-form">
+              <div class="flex items-center gap-2">
+                <input type="text" 
+                       id="chatInput" 
+                       class="chat-input"
+                       placeholder="Ask about this document..." 
+                       autocomplete="off">
+                <button type="submit" 
+                        class="flex-none px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                  Send
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      // Chat handling
+      const chatForm = document.getElementById('chatForm');
+      const chatWindow = document.getElementById('chatWindow');
+      const chatInput = document.getElementById('chatInput');
+
+      function appendMessage(content, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message';
+        
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${isUser ? 'user' : 'ai'}`;
+        bubble.textContent = content;
+        
+        messageDiv.appendChild(bubble);
+        chatWindow.appendChild(messageDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }
+
+      chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        // Append user message
+        appendMessage(text, true);
+        chatInput.value = '';
+
+        try {
+          // Call chat endpoint
+          const resp = await fetch(`/chat/{{ filename }}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: text})
+          });
+          
+          const data = await resp.json();
+          
+          // Append AI response
+          appendMessage(data.reply || 'I apologize, but I was unable to process that request.', false);
+        } catch (error) {
+          appendMessage('Sorry, there was an error processing your request. Please try again.', false);
+        }
+      });
+    </script>
+  </body>
+</html>

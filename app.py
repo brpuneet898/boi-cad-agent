@@ -89,22 +89,24 @@ def convert_pdf_with_pymupdf(pdf_path):
     try:
         doc = fitz.open(pdf_path)
         page = doc[0]  # Get first page
-        
+
         # Higher quality rendering
         mat = fitz.Matrix(2.0, 2.0)  # 2x scale for better quality
         pix = page.get_pixmap(matrix=mat)
-        
-        # Save as temporary image
-        temp_path = pdf_path.replace('.pdf', '_pymupdf.png')
+
+        # Save as temporary image inside uploads with a temp_ prefix
+        base = os.path.splitext(os.path.basename(pdf_path))[0]
+        timestamp = str(int(time.time()))
+        temp_path = os.path.join(app.config['UPLOAD_FOLDER'], f"temp_{base}_{timestamp}_pymupdf.png")
         pix.save(temp_path)
-        
+
         # Clean up
         pix = None
         doc.close()
-        
+
         logger.info(f"PDF converted successfully with PyMuPDF: {temp_path}")
         return temp_path
-        
+
     except Exception as e:
         logger.error(f"PyMuPDF conversion failed: {e}")
         return None
@@ -135,7 +137,9 @@ def convert_pdf_with_pdf2image(pdf_path):
                 images = convert_from_path(pdf_path, **kwargs)
                 
                 if images:
-                    temp_path = pdf_path.replace('.pdf', '_pdf2image.png')
+                    base = os.path.splitext(os.path.basename(pdf_path))[0]
+                    timestamp = str(int(time.time()))
+                    temp_path = os.path.join(app.config['UPLOAD_FOLDER'], f"temp_{base}_{timestamp}_pdf2image.png")
                     images[0].save(temp_path, 'PNG')
                     
                     # Clean up images from memory
@@ -170,10 +174,11 @@ def convert_pdf_to_image(pdf_path):
 def enhance_image(image_path):
     """Enhanced image processing with proper resource management"""
     try:
-        enhanced_path = image_path.replace('.', '_enhanced.')
-        if not enhanced_path.endswith(('.jpg', '.jpeg')):
-            enhanced_path = enhanced_path.rsplit('.', 1)[0] + '.jpg'
-        
+        # Place enhanced image next to uploads and mark as temp-enhanced
+        base = os.path.splitext(os.path.basename(image_path))[0]
+        timestamp = str(int(time.time()))
+        enhanced_path = os.path.join(app.config['UPLOAD_FOLDER'], f"temp_{base}_{timestamp}_enhanced.jpg")
+
         with safe_image_context(image_path) as img:
             # Handle different color modes smartly
             if img.mode in ['CMYK', 'LAB']:
@@ -357,61 +362,80 @@ def parse_gemini_response(response_text):
 
 def cleanup_temp_files(*file_paths):
     """Clean up temporary files"""
+    # Remove provided file paths if they look temporary
     for file_path in file_paths:
-        if file_path and os.path.exists(file_path) and 'temp' in file_path.lower():
-            try:
-                os.remove(file_path)
-                logger.debug(f"Cleaned up temp file: {file_path}")
-            except Exception as e:
-                logger.debug(f"Could not clean up {file_path}: {e}")
+        try:
+            if not file_path:
+                continue
+            if os.path.exists(file_path):
+                name = os.path.basename(file_path).lower()
+                if ('temp_' in name) or ('_pymupdf' in name) or ('_pdf2image' in name) or ('_enhanced' in name):
+                    os.remove(file_path)
+                    logger.debug(f"Cleaned up temp file: {file_path}")
+        except Exception as e:
+            logger.debug(f"Could not clean up {file_path}: {e}")
+
+    # Additionally, proactively remove older temp_* files in upload folder (best-effort)
+    try:
+        for fname in os.listdir(app.config['UPLOAD_FOLDER']):
+            if fname.startswith('temp_'):
+                fpath = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+                try:
+                    os.remove(fpath)
+                    logger.debug(f"Cleaned up residual temp file: {fpath}")
+                except Exception:
+                    pass
+    except Exception:
+        pass
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/upload", methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
     temp_files = []  # Track temp files for cleanup
-    
+    start_time = time.time()
+
     try:
         # Validate request
         if 'file' not in request.files:
             return jsonify({'error': 'No file selected'}), 400
-        
+
         file = request.files['file']
-        
+
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
-        
+
         if not allowed_file(file.filename):
             return jsonify({'error': 'Invalid file type. Please upload PDF, PNG, or JPG files.'}), 400
-        
+
         # Save uploaded file
         filename = secure_filename(file.filename)
         timestamp = str(int(time.time()))
         name, ext = os.path.splitext(filename)
         safe_filename = f"{name}_{timestamp}{ext}"
-        
+
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
         file.save(filepath)
-        
+
         analysis_result = None
-        
+
         if ext.lower() == '.pdf':
             # Strategy 1: Try direct PDF analysis (best for Gemini 2.0)
-            logger.info("Attempting direct PDF analysis...")
+            logger.info('Attempting direct PDF analysis...')
             analysis_result = analyze_with_gemini_direct_pdf(filepath)
-            
+
             # Strategy 2: Fallback to image conversion if direct analysis fails
             if not analysis_result or 'Error' in str(analysis_result):
-                logger.info("Direct PDF failed, trying image conversion...")
+                logger.info('Direct PDF failed, trying image conversion...')
                 converted_image = convert_pdf_to_image(filepath)
-                
+
                 if converted_image:
                     temp_files.append(converted_image)
                     enhanced_image = enhance_image(converted_image)
                     temp_files.append(enhanced_image)
-                    
+
                     analysis_result = analyze_with_gemini_image(enhanced_image)
                 else:
                     analysis_result = {
@@ -419,31 +443,168 @@ def upload_file():
                             {'name': 'Error', 'value': 'Failed to process PDF - no conversion method available'}
                         ]
                     }
-        
-        else:  # Image files
-            logger.info("Processing image file...")
+
+        else:
+            # Image files
+            logger.info('Processing image file...')
             enhanced_image = enhance_image(filepath)
             temp_files.append(enhanced_image)
-            
+
             analysis_result = analyze_with_gemini_image(enhanced_image)
-        
+
+        # Measure processing time
+        processing_time = round(time.time() - start_time, 3)
+
+        # Attach processing metadata to analysis result
+        metadata = {
+            'file_name': safe_filename,
+            'file_size': os.path.getsize(filepath),
+            'processing_time_seconds': processing_time,
+            'confidence': None,
+            'language': 'English'
+        }
+
+        # Add simple confidence heuristic if fields exist
+        try:
+            fields_count = len(analysis_result.get('fields', [])) if isinstance(analysis_result, dict) else 0
+            if fields_count > 0:
+                # heuristic: base 80 + 1 * fields (capped)
+                metadata['confidence'] = min(99.9, 80 + fields_count * 1.0)
+            else:
+                metadata['confidence'] = 50.0
+        except Exception:
+            metadata['confidence'] = None
+
+        # Persist analysis JSON next to uploaded file for later retrieval
+        analysis_artifact = {
+            'fields': analysis_result.get('fields', []) if isinstance(analysis_result, dict) else [],
+            'raw': analysis_result,
+            'metadata': metadata
+        }
+
+        analysis_filename = f"{safe_filename}.analysis.json"
+        analysis_path = os.path.join(app.config['UPLOAD_FOLDER'], analysis_filename)
+        try:
+            with open(analysis_path, 'w', encoding='utf-8') as af:
+                json.dump(analysis_artifact, af, indent=2)
+        except Exception as e:
+            logger.debug(f"Could not write analysis artifact: {e}")
+
         # Clean up temporary files
         cleanup_temp_files(*temp_files)
-        
+
         return jsonify({
             'success': True,
             'message': 'File analyzed successfully!',
             'filename': safe_filename,
-            'analysis': analysis_result or {
-                'fields': [{'name': 'Status', 'value': 'Analysis failed'}]
-            }
+            'analysis_file': analysis_filename
         }), 200
-        
+
     except Exception as e:
         # Clean up on error
         cleanup_temp_files(*temp_files)
         logger.error(f"Upload processing failed: {e}")
         return jsonify({'error': f'Upload failed: {str(e)}'}), 500
+
+
+@app.route('/analysis/<path:filename>')
+def analysis_page(filename):
+    """Render analysis page for a given uploaded filename"""
+    # Locate analysis artifact
+    safe = secure_filename(filename)
+    analysis_filename = f"{safe}.analysis.json"
+    analysis_path = os.path.join(app.config['UPLOAD_FOLDER'], analysis_filename)
+
+    if not os.path.exists(analysis_path):
+        flash('Analysis not found for the requested file.', 'error')
+        return redirect(url_for('home'))
+
+    try:
+        with open(analysis_path, 'r', encoding='utf-8') as f:
+            analysis_artifact = json.load(f)
+    except Exception as e:
+        logger.error(f"Failed to read analysis artifact: {e}")
+        flash('Could not read analysis results.', 'error')
+        return redirect(url_for('home'))
+
+    # Build document history (list of uploaded files)
+    uploads = []
+    try:
+        for fname in sorted(os.listdir(app.config['UPLOAD_FOLDER']), key=lambda x: os.path.getmtime(os.path.join(app.config['UPLOAD_FOLDER'], x)), reverse=True):
+            # skip analysis artifacts if you want in history show originals only
+            if fname.endswith('.analysis.json'):
+                continue
+            uploads.append({
+                'name': fname,
+                'url': url_for('static', filename=os.path.join('..', app.config['UPLOAD_FOLDER'], fname))
+            })
+    except Exception:
+        uploads = []
+
+    # Determine simple file metadata for display
+    metadata = analysis_artifact.get('metadata', {})
+
+    # For PDFs, try to get page count
+    extra_file_info = {}
+    try:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], safe)
+        if os.path.exists(file_path):
+            _, ext = os.path.splitext(file_path)
+            if ext.lower() == '.pdf' and 'fitz' in globals():
+                try:
+                    doc = fitz.open(file_path)
+                    extra_file_info['pages'] = doc.page_count
+                    doc.close()
+                except Exception:
+                    extra_file_info['pages'] = None
+            elif ext.lower() in ('.png', '.jpg', '.jpeg'):
+                try:
+                    with Image.open(file_path) as im:
+                        extra_file_info['resolution'] = f"{im.width}x{im.height} px"
+                except Exception:
+                    extra_file_info['resolution'] = None
+
+    except Exception:
+        pass
+
+    return render_template('analysis.html', analysis=analysis_artifact, uploads=uploads, metadata=metadata, extra=extra_file_info, filename=safe)
+
+
+@app.route('/chat/<path:filename>', methods=['POST'])
+def chat_endpoint(filename):
+    """Simple chat endpoint that uses the Gemini model when available or returns a canned reply."""
+    data = request.get_json(silent=True) or {}
+    user_message = data.get('message', '').strip()
+    if not user_message:
+        return jsonify({'error': 'No message provided'}), 400
+
+    # Load analysis artifact to give context
+    safe = secure_filename(filename)
+    analysis_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{safe}.analysis.json")
+    context_text = ''
+    try:
+        if os.path.exists(analysis_path):
+            with open(analysis_path, 'r', encoding='utf-8') as f:
+                art = json.load(f)
+                # include a brief summary of extracted fields
+                fields = art.get('fields', [])
+                context_text = f"Extracted {len(fields)} fields: " + ", ".join([str(f.get('name')) for f in fields[:10]])
+    except Exception:
+        context_text = ''
+
+    # If model is configured, try to call it
+    if model:
+        try:
+            prompt = f"You are an assistant for CAD document analysis. Context: {context_text}\nUser: {user_message}\nAnswer concisely."
+            response = model.generate_content(prompt)
+            text = getattr(response, 'text', None) or str(response)
+            return jsonify({'reply': text}), 200
+        except Exception as e:
+            logger.error(f"Chat model call failed: {e}")
+
+    # Fallback canned response
+    reply = f"I've successfully analyzed the document. {context_text}. You asked: '{user_message}'. What would you like to know about this drawing?"
+    return jsonify({'reply': reply}), 200
 
 @app.route("/contact", methods=['GET', 'POST'])
 def contact():
