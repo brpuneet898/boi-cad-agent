@@ -5,3 +5,4 @@ google-generativeai
 Pillow
 requests
 pdf2image
+opencv-python
