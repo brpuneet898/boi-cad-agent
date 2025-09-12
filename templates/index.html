@@ -24,14 +24,26 @@
           <!-- Links -->
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-8">
-              <a href="#features" class="nav-link text-sm font-medium">Features</a>
-              <a href="#how-it-works" class="nav-link text-sm font-medium">How It Works</a>
-              <a href="/contact" class="nav-link text-sm font-medium">Contact</a>
+              <a href="#features" class="nav-link text-sm font-medium"
+                >Features</a
+              >
+              <a href="#how-it-works" class="nav-link text-sm font-medium"
+                >How It Works</a
+              >
+              <a href="/contact" class="nav-link text-sm font-medium"
+                >Contact</a
+              >
             </div>
           </div>
 
           <!-- CTA -->
-          <div class="flex items-center">
+          <div class="flex items-center gap-3">
+            <a
+              href="/contact"
+              class="btn-secondary px-4 py-2 rounded-lg text-sm"
+            >
+              Contact
+            </a>
             <button class="btn-primary px-4 py-2 rounded-lg text-sm">
               Get Started
             </button>
@@ -44,7 +56,7 @@
     <section class="hero-gradient py-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-          Transform Your CAD Documents<br/>
+          Transform Your CAD Documents<br />
           Into Actionable Data
         </h1>
         <p class="text-xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -69,34 +81,90 @@
 
         <!-- Upload Widget (Hidden by default) -->
         <div id="uploadWidget" class="hidden mt-8 max-w-md mx-auto">
-          <div class="upload-card bg-white p-8 rounded-xl border-2 border-dashed border-gray-300 text-center">
+          <div
+            class="upload-card bg-white p-8 rounded-xl border-2 border-dashed border-gray-300 text-center"
+          >
             <form id="uploadForm" enctype="multipart/form-data">
               <!-- File Drop Zone -->
-              <div id="dropZone" class="mb-6 p-8 border-2 border-dashed border-primary rounded-lg transition-all hover:bg-light-accent cursor-pointer">
-                <svg class="mx-auto h-12 w-12 text-primary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+              <div
+                id="dropZone"
+                class="mb-6 p-8 border-2 border-dashed border-primary rounded-lg transition-all hover:bg-light-accent cursor-pointer"
+              >
+                <svg
+                  class="mx-auto h-12 w-12 text-primary mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  ></path>
                 </svg>
-                <p class="text-lg font-medium text-gray-900 mb-2">Drop your file here</p>
+                <p class="text-lg font-medium text-gray-900 mb-2">
+                  Drop your file here
+                </p>
                 <p class="text-sm text-gray-600 mb-4">or click to browse</p>
-                <p class="text-xs text-gray-500">Supports PDF, PNG, JPG files (Max 10MB)</p>
-                <input type="file" id="fileInput" name="file" accept=".pdf,.png,.jpg,.jpeg" class="hidden">
+                <p class="text-xs text-gray-500">
+                  Supports PDF, PNG, JPG files (Max 10MB)
+                </p>
+                <input
+                  type="file"
+                  id="fileInput"
+                  name="file"
+                  accept=".pdf,.png,.jpg,.jpeg"
+                  class="hidden"
+                />
               </div>
 
               <!-- Selected File Display -->
-              <div id="selectedFile" class="hidden mb-6 p-4 bg-light-accent rounded-lg">
+              <div
+                id="selectedFile"
+                class="hidden mb-6 p-4 bg-light-accent rounded-lg"
+              >
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
-                    <svg class="h-8 w-8 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    <svg
+                      class="h-8 w-8 text-primary mr-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      ></path>
                     </svg>
                     <div>
-                      <p id="fileName" class="text-sm font-medium text-gray-900"></p>
+                      <p
+                        id="fileName"
+                        class="text-sm font-medium text-gray-900"
+                      ></p>
                       <p id="fileSize" class="text-xs text-gray-600"></p>
                     </div>
                   </div>
-                  <button type="button" id="removeFileBtn" class="text-red-500 hover:text-red-700 transition-colors" onclick="removeFile()">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  <button
+                    type="button"
+                    id="removeFileBtn"
+                    class="text-red-500 hover:text-red-700 transition-colors"
+                    onclick="removeFile()"
+                  >
+                    <svg
+                      class="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      ></path>
                     </svg>
                   </button>
                 </div>
@@ -104,10 +172,19 @@
 
               <!-- Action Buttons -->
               <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <button type="submit" id="uploadSubmitBtn" class="btn-primary px-6 py-3 rounded-lg font-medium" disabled>
+                <button
+                  type="submit"
+                  id="uploadSubmitBtn"
+                  class="btn-primary px-6 py-3 rounded-lg font-medium"
+                  disabled
+                >
                   Upload
                 </button>
-                <button type="button" class="btn-secondary px-6 py-3 rounded-lg font-medium" onclick="hideUploadWidget()">
+                <button
+                  type="button"
+                  class="btn-secondary px-6 py-3 rounded-lg font-medium"
+                  onclick="hideUploadWidget()"
+                >
                   Cancel
                 </button>
               </div>
@@ -387,52 +464,59 @@
       let selectedFile = null;
 
       function showUploadWidget() {
-        document.getElementById('uploadWidget').classList.remove('hidden');
-        document.getElementById('uploadBtn').style.display = 'none';
+        document.getElementById("uploadWidget").classList.remove("hidden");
+        document.getElementById("uploadBtn").style.display = "none";
       }
 
       function hideUploadWidget() {
-        document.getElementById('uploadWidget').classList.add('hidden');
-        document.getElementById('uploadBtn').style.display = 'inline-block';
+        document.getElementById("uploadWidget").classList.add("hidden");
+        document.getElementById("uploadBtn").style.display = "inline-block";
         removeFile();
       }
 
       function removeFile() {
         selectedFile = null;
-        document.getElementById('selectedFile').classList.add('hidden');
-        document.getElementById('dropZone').classList.remove('hidden');
-        document.getElementById('fileInput').value = '';
-        document.getElementById('uploadSubmitBtn').disabled = true;
+        document.getElementById("selectedFile").classList.add("hidden");
+        document.getElementById("dropZone").classList.remove("hidden");
+        document.getElementById("fileInput").value = "";
+        document.getElementById("uploadSubmitBtn").disabled = true;
       }
 
       function displaySelectedFile(file) {
         selectedFile = file;
-        document.getElementById('fileName').textContent = file.name;
-        document.getElementById('fileSize').textContent = formatFileSize(file.size);
-        document.getElementById('selectedFile').classList.remove('hidden');
-        document.getElementById('dropZone').classList.add('hidden');
-        document.getElementById('uploadSubmitBtn').disabled = false;
+        document.getElementById("fileName").textContent = file.name;
+        document.getElementById("fileSize").textContent = formatFileSize(
+          file.size
+        );
+        document.getElementById("selectedFile").classList.remove("hidden");
+        document.getElementById("dropZone").classList.add("hidden");
+        document.getElementById("uploadSubmitBtn").disabled = false;
       }
 
       function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
+        if (bytes === 0) return "0 Bytes";
         const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const sizes = ["Bytes", "KB", "MB", "GB"];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
       }
 
       function validateFile(file) {
-        const allowedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+        const allowedTypes = [
+          "application/pdf",
+          "image/png",
+          "image/jpeg",
+          "image/jpg",
+        ];
         const maxSize = 10 * 1024 * 1024; // 10MB
 
         if (!allowedTypes.includes(file.type)) {
-          alert('Please select a valid file type (PDF, PNG, JPG)');
+          alert("Please select a valid file type (PDF, PNG, JPG)");
           return false;
         }
 
         if (file.size > maxSize) {
-          alert('File size must be less than 10MB');
+          alert("File size must be less than 10MB");
           return false;
         }
 
@@ -440,41 +524,41 @@
       }
 
       // Set up event listeners
-      document.addEventListener('DOMContentLoaded', function() {
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const uploadForm = document.getElementById('uploadForm');
+      document.addEventListener("DOMContentLoaded", function () {
+        const dropZone = document.getElementById("dropZone");
+        const fileInput = document.getElementById("fileInput");
+        const uploadForm = document.getElementById("uploadForm");
 
         // Click to browse
-        dropZone.addEventListener('click', function() {
+        dropZone.addEventListener("click", function () {
           fileInput.click();
         });
 
         // File input change
-        fileInput.addEventListener('change', function(e) {
+        fileInput.addEventListener("change", function (e) {
           const file = e.target.files[0];
           if (file && validateFile(file)) {
             displaySelectedFile(file);
           } else {
-            fileInput.value = '';
+            fileInput.value = "";
           }
         });
 
         // Drag and drop functionality
-        dropZone.addEventListener('dragover', function(e) {
+        dropZone.addEventListener("dragover", function (e) {
           e.preventDefault();
-          dropZone.classList.add('border-blue-500', 'bg-blue-50');
+          dropZone.classList.add("border-blue-500", "bg-blue-50");
         });
 
-        dropZone.addEventListener('dragleave', function(e) {
+        dropZone.addEventListener("dragleave", function (e) {
           e.preventDefault();
-          dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+          dropZone.classList.remove("border-blue-500", "bg-blue-50");
         });
 
-        dropZone.addEventListener('drop', function(e) {
+        dropZone.addEventListener("drop", function (e) {
           e.preventDefault();
-          dropZone.classList.remove('border-blue-500', 'bg-blue-50');
-          
+          dropZone.classList.remove("border-blue-500", "bg-blue-50");
+
           const files = e.dataTransfer.files;
           if (files.length > 0) {
             const file = files[0];
@@ -486,64 +570,65 @@
         });
 
         // Form submission
-        uploadForm.addEventListener('submit', function(e) {
+        uploadForm.addEventListener("submit", function (e) {
           e.preventDefault();
-          
+
           if (!selectedFile) {
-            alert('Please select a file to upload');
+            alert("Please select a file to upload");
             return;
           }
 
           // Show loading state
-          const submitBtn = document.getElementById('uploadSubmitBtn');
+          const submitBtn = document.getElementById("uploadSubmitBtn");
           const originalText = submitBtn.textContent;
           submitBtn.disabled = true;
-          submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...';
+          submitBtn.innerHTML =
+            '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...';
 
           // Create FormData and send to server
           const formData = new FormData();
-          formData.append('file', selectedFile);
+          formData.append("file", selectedFile);
 
-          fetch('/upload', {
-            method: 'POST',
-            body: formData
+          fetch("/upload", {
+            method: "POST",
+            body: formData,
           })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              // Redirect to analysis page for the uploaded file
-              if (data.analysis_file) {
-                window.location.href = `/analysis/${data.filename}`;
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Redirect to analysis page for the uploaded file
+                if (data.analysis_file) {
+                  window.location.href = `/analysis/${data.filename}`;
+                } else {
+                  alert("File uploaded successfully! " + data.message);
+                  hideUploadWidget();
+                }
               } else {
-                alert('File uploaded successfully! ' + data.message);
-                hideUploadWidget();
+                alert("Upload failed: " + data.error);
               }
-            } else {
-              alert('Upload failed: ' + data.error);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('Upload failed: ' + error.message);
-          })
-          .finally(() => {
-            // Reset button state
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-          });
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("Upload failed: " + error.message);
+            })
+            .finally(() => {
+              // Reset button state
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText;
+            });
         });
       });
 
       // Analysis Results Functions
       function showAnalysisResults(fields, filename) {
         // Hide hero section and upload widget
-        document.querySelector('.hero-gradient').style.display = 'none';
-        document.getElementById('uploadWidget').classList.add('hidden');
-        
+        document.querySelector(".hero-gradient").style.display = "none";
+        document.getElementById("uploadWidget").classList.add("hidden");
+
         // Create results container
-        const resultsContainer = document.createElement('div');
-        resultsContainer.id = 'analysisResults';
-        resultsContainer.className = 'py-20 bg-white';
+        const resultsContainer = document.createElement("div");
+        resultsContainer.id = "analysisResults";
+        resultsContainer.className = "py-20 bg-white";
         resultsContainer.innerHTML = `
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header with small upload button -->
@@ -570,19 +655,19 @@
             </div>
           </div>
         `;
-        
+
         // Insert results after navigation
-        const nav = document.querySelector('nav');
+        const nav = document.querySelector("nav");
         nav.parentNode.insertBefore(resultsContainer, nav.nextSibling);
-        
+
         // Populate field cards
         populateFieldCards(fields);
       }
 
       function populateFieldCards(fields) {
-        const fieldsGrid = document.getElementById('fieldsGrid');
-        fieldsGrid.innerHTML = '';
-        
+        const fieldsGrid = document.getElementById("fieldsGrid");
+        fieldsGrid.innerHTML = "";
+
         fields.forEach((field, index) => {
           const fieldCard = createFieldCard(field, index);
           fieldsGrid.appendChild(fieldCard);
@@ -590,10 +675,11 @@
       }
 
       function createFieldCard(field, index) {
-        const card = document.createElement('div');
-        card.className = 'field-card bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all';
+        const card = document.createElement("div");
+        card.className =
+          "field-card bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all";
         card.id = `field-${index}`;
-        
+
         card.innerHTML = `
           <div class="field-display">
             <div class="flex justify-between items-start mb-2">
@@ -627,75 +713,75 @@
             </div>
           </div>
         `;
-        
+
         return card;
       }
 
       function editField(index) {
         const card = document.getElementById(`field-${index}`);
-        card.querySelector('.field-display').classList.add('hidden');
-        card.querySelector('.field-edit').classList.remove('hidden');
+        card.querySelector(".field-display").classList.add("hidden");
+        card.querySelector(".field-edit").classList.remove("hidden");
       }
 
       function cancelEdit(index) {
         const card = document.getElementById(`field-${index}`);
-        card.querySelector('.field-display').classList.remove('hidden');
-        card.querySelector('.field-edit').classList.add('hidden');
+        card.querySelector(".field-display").classList.remove("hidden");
+        card.querySelector(".field-edit").classList.add("hidden");
       }
 
       function saveField(index) {
         const card = document.getElementById(`field-${index}`);
-        const nameInput = card.querySelector('.field-name-input');
-        const valueInput = card.querySelector('.field-value-input');
-        
+        const nameInput = card.querySelector(".field-name-input");
+        const valueInput = card.querySelector(".field-value-input");
+
         const newName = nameInput.value.trim();
         const newValue = valueInput.value.trim();
-        
+
         if (!newName || !newValue) {
-          alert('Both field name and value are required');
+          alert("Both field name and value are required");
           return;
         }
-        
+
         // Update display
-        card.querySelector('.field-name').textContent = newName;
-        card.querySelector('.field-value').textContent = newValue;
-        
+        card.querySelector(".field-name").textContent = newName;
+        card.querySelector(".field-value").textContent = newValue;
+
         // Hide edit mode
         cancelEdit(index);
-        
+
         // TODO: Save to backend if needed
       }
 
       function deleteField(index) {
-        if (confirm('Are you sure you want to delete this field?')) {
+        if (confirm("Are you sure you want to delete this field?")) {
           const card = document.getElementById(`field-${index}`);
           card.remove();
         }
       }
 
       function addNewField() {
-        const fieldsGrid = document.getElementById('fieldsGrid');
+        const fieldsGrid = document.getElementById("fieldsGrid");
         const newIndex = fieldsGrid.children.length;
-        
-        const newField = { name: 'New Field', value: 'Enter value here' };
+
+        const newField = { name: "New Field", value: "Enter value here" };
         const newCard = createFieldCard(newField, newIndex);
-        
+
         fieldsGrid.appendChild(newCard);
-        
+
         // Immediately edit the new field
         editField(newIndex);
       }
 
       function resetToUpload() {
         // Remove analysis results
-        const resultsContainer = document.getElementById('analysisResults');
+        const resultsContainer = document.getElementById("analysisResults");
         if (resultsContainer) {
           resultsContainer.remove();
         }
-        
+
         // Show hero section
-        document.querySelector('.hero-gradient').style.display = 'block';
-        
+        document.querySelector(".hero-gradient").style.display = "block";
+
         // Reset upload widget
         hideUploadWidget();
       }
