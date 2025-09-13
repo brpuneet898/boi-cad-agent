@@ -22,15 +22,21 @@
           </div>
 
           <!-- Links -->
-          <div class="hidden md:block">
+          <div class="block">
             <div class="ml-10 flex items-baseline space-x-8">
-              <a href="#features" class="nav-link text-sm font-medium"
-                >Features</a
+              <a
+                href="/"
+                class="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
+                >Home</a
               >
-              <a href="#how-it-works" class="nav-link text-sm font-medium"
+              <a
+                href="#how-it-works"
+                class="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
                 >How It Works</a
               >
-              <a href="/contact" class="nav-link text-sm font-medium"
+              <a
+                href="/contact"
+                class="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
                 >Contact</a
               >
             </div>
@@ -38,15 +44,9 @@
 
           <!-- CTA -->
           <div class="flex items-center gap-3">
-            <a
-              href="/contact"
-              class="btn-secondary px-4 py-2 rounded-lg text-sm"
-            >
-              Contact
-            </a>
-            <button class="btn-primary px-4 py-2 rounded-lg text-sm">
+            <a href="/" class="btn-primary px-4 py-2 rounded-lg text-sm">
               Get Started
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -72,11 +72,12 @@
           >
             Upload Document
           </button>
-          <button
+          <a
+            href="#how-it-works"
             class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold"
           >
             Watch Demo
-          </button>
+          </a>
         </div>
 
         <!-- Upload Widget (Hidden by default) -->
@@ -368,66 +369,311 @@
       </div>
     </section>
 
-    <!-- How It Works -->
-    <section id="how-it-works" class="py-20 bg-light-accent">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-        <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-        <p class="text-xl text-gray-700 max-w-2xl mx-auto">
-          Simple three-step process to transform your documents into structured,
-          actionable data.
-        </p>
+    <!-- How It Works - Creative Flowchart -->
+    <section
+      id="how-it-works"
+      class="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden"
+    >
+      <!-- Background Animation Elements -->
+      <div class="absolute inset-0 opacity-10">
+        <div
+          class="absolute top-20 left-10 w-32 h-32 bg-blue-300 rounded-full animate-pulse"
+        ></div>
+        <div
+          class="absolute top-40 right-20 w-24 h-24 bg-purple-300 rounded-full animate-bounce"
+        ></div>
+        <div
+          class="absolute bottom-20 left-1/4 w-20 h-20 bg-green-300 rounded-full animate-ping"
+        ></div>
       </div>
 
-      <!-- Steps Container -->
-      <div
-        class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 px-4 sm:px-6 lg:px-8"
-      >
-        <!-- Step 1 -->
-        <div
-          class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg"
-        >
-          <div
-            class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-20">
+          <h2
+            class="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent mb-6"
           >
-            <span class="text-3xl font-bold">1</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Upload Documents</h3>
-          <p class="text-gray-700 leading-relaxed">
-            Drag and drop your CAD drawings, PDFs, or technical specifications.
-            Supports PDF, PNG, and JPG files.
+            🚀 The Magic Happens Here
+          </h2>
+          <p class="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+            Watch your documents transform through our intelligent pipeline
           </p>
         </div>
 
-        <!-- Step 2 -->
-        <div
-          class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg"
-        >
+        <!-- Flowchart Container -->
+        <div class="relative">
+          <!-- Main Flow Path -->
           <div
-            class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+            class="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 transform -translate-y-1/2 z-0"
           >
-            <span class="text-3xl font-bold">2</span>
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 animate-pulse"
+            ></div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">AI Processing</h3>
-          <p class="text-gray-700 leading-relaxed">
-            Our advanced AI extracts key information and maps fields to standard
-            formats. Review and validate as needed.
-          </p>
-        </div>
 
-        <!-- Step 3 -->
-        <div
-          class="step-card text-center transition-all hover:transform hover:scale-105 hover:shadow-lg"
-        >
-          <div
-            class="step-number bg-primary text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-          >
-            <span class="text-3xl font-bold">3</span>
+          <!-- Flow Steps -->
+          <div class="grid lg:grid-cols-4 gap-8 lg:gap-4 relative z-10">
+            <!-- Step 1: Upload -->
+            <div class="group relative">
+              <div
+                class="bg-white rounded-3xl p-8 shadow-xl border-4 border-blue-200 hover:border-blue-400 transition-all duration-500 hover:scale-105 hover:rotate-1"
+              >
+                <div class="text-center">
+                  <!-- Animated Icon -->
+                  <div class="relative mb-6">
+                    <div
+                      class="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-500"
+                    >
+                      <svg
+                        class="w-10 h-10 text-white animate-bounce"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping"
+                    ></div>
+                  </div>
+
+                  <h3 class="text-xl font-bold text-gray-900 mb-3">
+                    📄 Upload
+                  </h3>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Drop your CAD files, PDFs, or technical drawings
+                  </p>
+                </div>
+              </div>
+
+              <!-- Arrow -->
+              <div
+                class="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-20"
+              >
+                <div
+                  class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center animate-pulse"
+                >
+                  <svg
+                    class="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: AI Processing -->
+            <div class="group relative">
+              <div
+                class="bg-white rounded-3xl p-8 shadow-xl border-4 border-purple-200 hover:border-purple-400 transition-all duration-500 hover:scale-105 hover:-rotate-1"
+              >
+                <div class="text-center">
+                  <!-- Animated Icon -->
+                  <div class="relative mb-6">
+                    <div
+                      class="w-20 h-20 mx-auto bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-500"
+                    >
+                      <svg
+                        class="w-10 h-10 text-white animate-spin"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-green-400 rounded-full animate-ping"
+                    ></div>
+                  </div>
+
+                  <h3 class="text-xl font-bold text-gray-900 mb-3">
+                    🤖 AI Magic
+                  </h3>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Advanced AI extracts and analyzes every detail
+                  </p>
+                </div>
+              </div>
+
+              <!-- Arrow -->
+              <div
+                class="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-20"
+              >
+                <div
+                  class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center animate-pulse"
+                >
+                  <svg
+                    class="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Validation -->
+            <div class="group relative">
+              <div
+                class="bg-white rounded-3xl p-8 shadow-xl border-4 border-green-200 hover:border-green-400 transition-all duration-500 hover:scale-105 hover:rotate-1"
+              >
+                <div class="text-center">
+                  <!-- Animated Icon -->
+                  <div class="relative mb-6">
+                    <div
+                      class="w-20 h-20 mx-auto bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-500"
+                    >
+                      <svg
+                        class="w-10 h-10 text-white animate-pulse"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-blue-400 rounded-full animate-ping"
+                    ></div>
+                  </div>
+
+                  <h3 class="text-xl font-bold text-gray-900 mb-3">
+                    ✅ Validate
+                  </h3>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Review, edit, and perfect your extracted data
+                  </p>
+                </div>
+              </div>
+
+              <!-- Arrow -->
+              <div
+                class="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-20"
+              >
+                <div
+                  class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center animate-pulse"
+                >
+                  <svg
+                    class="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Export -->
+            <div class="group relative">
+              <div
+                class="bg-white rounded-3xl p-8 shadow-xl border-4 border-yellow-200 hover:border-yellow-400 transition-all duration-500 hover:scale-105 hover:-rotate-1"
+              >
+                <div class="text-center">
+                  <!-- Animated Icon -->
+                  <div class="relative mb-6">
+                    <div
+                      class="w-20 h-20 mx-auto bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center transform group-hover:-rotate-12 transition-transform duration-500"
+                    >
+                      <svg
+                        class="w-10 h-10 text-white animate-bounce"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-purple-400 rounded-full animate-ping"
+                    ></div>
+                  </div>
+
+                  <h3 class="text-xl font-bold text-gray-900 mb-3">
+                    🚀 Export
+                  </h3>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Generate reports, orders, and integrate with your systems
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Generate Actions</h3>
-          <p class="text-gray-700 leading-relaxed">
-            Create procurement orders, cost analyses, and reports with one
-            click. Export data to your systems.
-          </p>
+
+          <!-- Fun Stats -->
+          <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div
+              class="text-center p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-blue-200"
+            >
+              <div class="text-3xl font-bold text-blue-600 mb-2">⚡</div>
+              <div class="text-2xl font-bold text-gray-900">3 sec</div>
+              <div class="text-sm text-gray-600">Average Processing</div>
+            </div>
+            <div
+              class="text-center p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-purple-200"
+            >
+              <div class="text-3xl font-bold text-purple-600 mb-2">🎯</div>
+              <div class="text-2xl font-bold text-gray-900">99.5%</div>
+              <div class="text-sm text-gray-600">Accuracy Rate</div>
+            </div>
+            <div
+              class="text-center p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-green-200"
+            >
+              <div class="text-3xl font-bold text-green-600 mb-2">📊</div>
+              <div class="text-2xl font-bold text-gray-900">50+</div>
+              <div class="text-sm text-gray-600">Data Fields</div>
+            </div>
+            <div
+              class="text-center p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-yellow-200"
+            >
+              <div class="text-3xl font-bold text-yellow-600 mb-2">🔥</div>
+              <div class="text-2xl font-bold text-gray-900">24/7</div>
+              <div class="text-sm text-gray-600">Always Ready</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -443,16 +689,18 @@
           document processing with ADPA.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
+          <a
+            href="/"
             class="btn-primary px-8 py-4 rounded-lg text-lg font-semibold"
           >
             Start Free Trial
-          </button>
-          <button
+          </a>
+          <a
+            href="/contact"
             class="btn-secondary px-8 py-4 rounded-lg text-lg font-semibold"
           >
             Schedule Demo
-          </button>
+          </a>
         </div>
         <p class="text-sm text-gray-600 mt-4">
           No credit card required • 14-day free trial • Cancel anytime
