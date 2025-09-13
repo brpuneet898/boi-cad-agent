@@ -6,7 +6,7 @@ import logging
 from contextlib import contextmanager
 from typing import Dict, Optional
 
-from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify, send_from_directory
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
 from PIL import Image, ImageEnhance
@@ -570,6 +570,50 @@ def analysis_page(filename):
     return render_template('analysis.html', analysis=analysis_artifact, uploads=uploads, metadata=metadata, extra=extra_file_info, filename=safe)
 
 
+@app.route('/save-analysis/<path:filename>', methods=['POST'])
+def save_analysis(filename):
+    """Save updated analysis fields to JSON file"""
+    try:
+        # Get the updated fields from request
+        data = request.get_json()
+        if not data or 'fields' not in data:
+            return jsonify({'error': 'No fields data provided'}), 400
+        
+        # Locate analysis artifact file
+        safe = secure_filename(filename)
+        analysis_filename = f"{safe}.analysis.json"
+        analysis_path = os.path.join(app.config['UPLOAD_FOLDER'], analysis_filename)
+        
+        if not os.path.exists(analysis_path):
+            return jsonify({'error': 'Analysis file not found'}), 404
+        
+        # Read existing analysis
+        with open(analysis_path, 'r', encoding='utf-8') as f:
+            analysis_artifact = json.load(f)
+        
+        # Update the fields
+        analysis_artifact['fields'] = data['fields']
+        
+        # Add update timestamp
+        analysis_artifact['metadata']['last_updated'] = time.time()
+        analysis_artifact['metadata']['updated_fields_count'] = len(data['fields'])
+        
+        # Save updated analysis
+        with open(analysis_path, 'w', encoding='utf-8') as f:
+            json.dump(analysis_artifact, f, indent=2, ensure_ascii=False)
+        
+        logger.info(f"Analysis updated for {filename}: {len(data['fields'])} fields")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Analysis saved successfully',
+            'fields_count': len(data['fields'])
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Failed to save analysis for {filename}: {e}")
+        return jsonify({'error': f'Failed to save analysis: {str(e)}'}), 500
+
 @app.route('/chat/<path:filename>', methods=['POST'])
 def chat_endpoint(filename):
     """Simple chat endpoint that uses the Gemini model when available or returns a canned reply."""
@@ -605,6 +649,11 @@ def chat_endpoint(filename):
     # Fallback canned response
     reply = f"I've successfully analyzed the document. {context_text}. You asked: '{user_message}'. What would you like to know about this drawing?"
     return jsonify({'reply': reply}), 200
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded files"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route("/contact", methods=['GET', 'POST'])
 def contact():

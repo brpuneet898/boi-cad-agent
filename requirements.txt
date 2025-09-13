@@ -6,3 +6,4 @@ Pillow
 requests
 pdf2image
 opencv-python
+PyMuPDF
