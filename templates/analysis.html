@@ -37,29 +37,29 @@
     <main class="analysis-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-12 gap-6">
       <!-- Left column: Document History -->
       <aside class="col-span-12 md:col-span-4 lg:col-span-4">
-        <div class="bg-white rounded-xl shadow-sm h-full flex flex-col">
-          <header class="section-header flex-shrink-0">
+        <div class="bg-white rounded-xl shadow-sm">
+          <header class="section-header">
             <h2>Document History</h2>
             <div class="subtitle">Recently processed files</div>
           </header>
           
-          <div class="flex-1 p-4 overflow-y-auto">
-            <div id="docHistory" class="space-y-3 h-full"></div>
+          <div class="p-4">
+            <div id="docHistory" class="space-y-3 max-h-96 overflow-y-auto">
               {% for u in uploads %}
-              <div class="p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition-colors border border-gray-100 hover:border-blue-200 hover:shadow-md"></div>
+              <div class="p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition-colors border border-gray-100 hover:border-blue-200 hover:shadow-md">
                 <div class="space-y-2">
                   <div class="font-medium text-gray-900 text-sm leading-tight break-words">{{ u.name }}</div>
                   <div class="flex items-center justify-between">
                     <div class="text-xs text-gray-500">Recently uploaded</div>
                     <a href="/analysis/{{ u.name }}" 
-                       class="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded transition-colors whitespace-nowrap"></a>
+                       class="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded transition-colors whitespace-nowrap">
                       View
                     </a>
                   </div>
                 </div>
               </div>
               {% else %}
-              <div class="text-sm text-gray-500 p-6 text-center bg-gray-50 rounded-lg h-full flex flex-col items-center justify-center">
+              <div class="text-sm text-gray-500 p-6 text-center bg-gray-50 rounded-lg">
                 <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
@@ -292,15 +292,24 @@
           <div class="chat-section">
             <div id="chatWindow" class="chat-window">
               <div class="chat-status">
-                <svg class="w-2 h-2 fill-current" viewBox="0 0 8 8">
+                <svg class="w-2 h-2 fill-current text-green-500" viewBox="0 0 8 8">
                   <circle cx="4" cy="4" r="4"/>
                 </svg>
-                <span>AI Assistant Online</span>
+                <span>CAD Expert AI Online</span>
               </div>
               
               <div class="chat-message">
                 <div class="chat-bubble ai">
-                  I've analyzed your CAD drawing and extracted the relevant fields. How can I help you understand this document better?
+                  👋 Hi! I'm your CAD analysis expert. I've studied your document and extracted {{ analysis.fields|length }} fields of information. 
+                  
+                  I can help you with:
+                  📐 Dimensions & measurements
+                  🔧 Materials & specifications  
+                  📋 Part numbers & components
+                  🏭 Manufacturing requirements
+                  💰 Cost analysis factors
+                  
+                  What would you like to know about this drawing?
                 </div>
               </div>
             </div>
@@ -335,24 +344,99 @@
         
         const bubble = document.createElement('div');
         bubble.className = `chat-bubble ${isUser ? 'user' : 'ai'}`;
-        bubble.textContent = content;
+        
+        // Format the content properly
+        if (isUser) {
+          bubble.textContent = content;
+        } else {
+          // For AI messages, preserve line breaks and formatting
+          bubble.innerHTML = formatAIMessage(content);
+        }
         
         messageDiv.appendChild(bubble);
         chatWindow.appendChild(messageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight;
       }
 
+      function formatAIMessage(content) {
+        // Convert line breaks to HTML
+        let formatted = content
+          .replace(/\n/g, '<br>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+          .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic text
+          .replace(/•/g, '<br>•') // Bullet points on new lines
+          .replace(/📐|🔧|📋|🏭|💰/g, '<br>$&'); // Emojis on new lines
+        
+        return formatted;
+      }
+
+      // Enhanced chat functionality
+      let isTyping = false;
+
+      function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'chat-message typing-indicator';
+        typingDiv.innerHTML = `
+          <div class="chat-bubble ai">
+            <div class="flex items-center space-x-1">
+              <div class="flex space-x-1">
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+              </div>
+              <span class="text-sm text-gray-500 ml-2">AI is thinking...</span>
+            </div>
+          </div>
+        `;
+        chatWindow.appendChild(typingDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        return typingDiv;
+      }
+
+      function addQuickReplies() {
+        const quickReplies = [
+          "What are the main dimensions?",
+          "What materials are specified?", 
+          "Show me the part numbers",
+          "What manufacturing processes are needed?",
+          "Are there any tolerances specified?"
+        ];
+
+        const quickReplyDiv = document.createElement('div');
+        quickReplyDiv.className = 'quick-replies mt-3 flex flex-wrap gap-2';
+        quickReplyDiv.innerHTML = quickReplies.map(reply => 
+          `<button onclick="sendQuickReply('${reply}')" class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-full transition-colors">
+            ${reply}
+          </button>`
+        ).join('');
+
+        chatWindow.appendChild(quickReplyDiv);
+      }
+
+      function sendQuickReply(message) {
+        chatInput.value = message;
+        chatForm.dispatchEvent(new Event('submit'));
+        
+        // Remove quick replies after use
+        const quickReplies = chatWindow.querySelector('.quick-replies');
+        if (quickReplies) quickReplies.remove();
+      }
+
       chatForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         const text = chatInput.value.trim();
-        if (!text) return;
+        if (!text || isTyping) return;
 
         // Append user message
         appendMessage(text, true);
         chatInput.value = '';
+        isTyping = true;
+
+        // Show typing indicator
+        const typingIndicator = showTypingIndicator();
 
         try {
-          // Call chat endpoint
+          // Call enhanced chat endpoint
           const resp = await fetch(`/chat/{{ filename }}`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -361,12 +445,26 @@
           
           const data = await resp.json();
           
-          // Append AI response
-          appendMessage(data.reply || 'I apologize, but I was unable to process that request.', false);
+          // Remove typing indicator
+          typingIndicator.remove();
+          
+          // Append AI response with enhanced formatting
+          const aiResponse = data.reply || 'I apologize, but I was unable to process that request. Please try asking about specific aspects of the CAD document.';
+          appendMessage(aiResponse, false);
+          
         } catch (error) {
-          appendMessage('Sorry, there was an error processing your request. Please try again.', false);
+          console.error('Chat error:', error);
+          typingIndicator.remove();
+          appendMessage('Sorry, there was an error connecting to the AI assistant. Please check your connection and try again.', false);
+        } finally {
+          isTyping = false;
         }
       });
+
+      // Add quick replies on page load
+      setTimeout(() => {
+        addQuickReplies();
+      }, 1000);
 
       // Field editing functionality
       let fieldsData = {{ analysis.fields | tojson }};

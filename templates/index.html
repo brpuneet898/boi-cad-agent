@@ -844,13 +844,22 @@
             .then((response) => response.json())
             .then((data) => {
               if (data.success) {
-                // Redirect to analysis page for the uploaded file
-                if (data.analysis_file) {
-                  window.location.href = `/analysis/${data.filename}`;
-                } else {
-                  alert("File uploaded successfully! " + data.message);
-                  hideUploadWidget();
-                }
+                // Show success message and redirect
+                submitBtn.innerHTML = `
+                  <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  Analysis Complete!
+                `;
+                
+                setTimeout(() => {
+                  if (data.analysis_file) {
+                    window.location.href = `/analysis/${data.filename}`;
+                  } else {
+                    alert("File uploaded successfully! " + data.message);
+                    hideUploadWidget();
+                  }
+                }, 1000);
               } else {
                 alert("Upload failed: " + data.error);
               }
