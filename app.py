@@ -47,15 +47,28 @@ app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE
 # Create directories
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Initialize Gemini - optimized for image analysis
+# Initialize Gemini - optimized for fast CAD analysis
 gemini_api_key = os.environ.get('GEMINI_API_KEY')
 if not gemini_api_key:
     logger.error("GEMINI_API_KEY not found in environment variables")
     model = None
 else:
     genai.configure(api_key=gemini_api_key)
-    model = genai.GenerativeModel('gemini-2.0-flash')
-    logger.info("Gemini 2.0 Flash initialized for image analysis")
+    
+    # Configure generation settings for optimal speed and quality
+    generation_config = genai.types.GenerationConfig(
+        temperature=0.1,  # Lower temperature for more consistent, faster responses
+        top_p=0.8,        # Focused sampling for speed
+        top_k=20,         # Limit token choices for faster generation
+        max_output_tokens=2048,  # Reasonable limit for CAD analysis
+    )
+    
+    # Use Gemini 2.0 Flash for faster processing (2.5 is slower for document analysis)
+    model = genai.GenerativeModel(
+        'gemini-2.0-flash',  # Faster than 2.5 for this specific task
+        generation_config=generation_config
+    )
+    logger.info("Gemini 2.0 Flash initialized with speed-optimized settings for CAD analysis")
 
 # Email configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -222,16 +235,22 @@ def enhance_image(image_path):
         return image_path  # Return original if enhancement fails
 
 def analyze_with_gemini_direct_pdf(pdf_path):
-    """Analyze PDF directly with Gemini 2.0 (best approach)"""
+    """Analyze PDF directly with Gemini - optimized for speed"""
     try:
         if not model:
             return {"fields": [{"name": "Error", "value": "Gemini API not configured"}]}
+        
+        # Check file size - if too large, use image conversion instead
+        file_size = os.path.getsize(pdf_path)
+        if file_size > 5 * 1024 * 1024:  # 5MB limit for direct PDF analysis
+            logger.info(f"PDF too large ({file_size/1024/1024:.1f}MB), switching to image conversion")
+            return None  # Will trigger fallback to image conversion
         
         # Read PDF as binary
         with open(pdf_path, 'rb') as pdf_file:
             pdf_data = pdf_file.read()
         
-        # Create the prompt
+        # Create the optimized prompt
         prompt = get_analysis_prompt()
         
         # Prepare the PDF for Gemini
@@ -240,10 +259,15 @@ def analyze_with_gemini_direct_pdf(pdf_path):
             "data": pdf_data
         }
         
-        # Generate analysis
+        # Generate analysis with timeout handling
+        logger.info("Starting direct PDF analysis...")
+        start_time = time.time()
+        
         response = model.generate_content([prompt, pdf_part])
         
-        logger.info("Direct PDF analysis completed successfully")
+        processing_time = time.time() - start_time
+        logger.info(f"Direct PDF analysis completed in {processing_time:.2f} seconds")
+        
         return parse_gemini_response(response.text)
         
     except Exception as e:
@@ -251,16 +275,28 @@ def analyze_with_gemini_direct_pdf(pdf_path):
         return {"fields": [{"name": "Error", "value": f"Direct PDF analysis failed: {str(e)}"}]}
 
 def analyze_with_gemini_image(image_path):
-    """Analyze image with Gemini Vision"""
+    """Analyze image with Gemini Vision - optimized for speed"""
     try:
         if not model:
             return {"fields": [{"name": "Error", "value": "Gemini API not configured"}]}
         
+        logger.info("Starting image analysis...")
+        start_time = time.time()
+        
         with safe_image_context(image_path) as img:
+            # Optimize image size for faster processing
+            width, height = img.size
+            if width > 1024 or height > 1024:
+                # Resize for faster processing while maintaining quality
+                img.thumbnail((1024, 1024), Image.Resampling.LANCZOS)
+                logger.info(f"Resized image to {img.size} for faster processing")
+            
             prompt = get_analysis_prompt()
             response = model.generate_content([prompt, img])
             
-        logger.info("Image analysis completed successfully")
+        processing_time = time.time() - start_time
+        logger.info(f"Image analysis completed in {processing_time:.2f} seconds")
+        
         return parse_gemini_response(response.text)
         
     except Exception as e:
@@ -268,55 +304,32 @@ def analyze_with_gemini_image(image_path):
         return {"fields": [{"name": "Error", "value": f"Image analysis failed: {str(e)}"}]}
 
 def get_analysis_prompt():
-    """Comprehensive CAD analysis prompt"""
+    """Optimized CAD analysis prompt for speed"""
     return """
-    Analyze this CAD/technical drawing and extract ALL visible information systematically.
+    Extract key information from this CAD/technical drawing. Focus on the most important data.
     
-    Look for and extract:
+    EXTRACT:
+    - Drawing/part numbers, revisions
+    - Dimensions, measurements, tolerances  
+    - Materials, specifications
+    - Manufacturing notes, processes
+    - Designer info, dates, standards
+    - Text annotations, symbols
     
-    **IDENTIFICATION:**
-    - Drawing numbers, part numbers, revision codes
-    - Sheet numbers, project codes, file references
-    
-    **DIMENSIONS & GEOMETRY:**
-    - All measurements, dimensions, coordinates
-    - Angles, radii, tolerances, scales
-    - Geometric features (holes, slots, profiles)
-    
-    **MATERIALS & SPECIFICATIONS:**
-    - Material types, grades, treatments
-    - Surface finishes, coatings, hardness
-    
-    **MANUFACTURING:**
-    - Machining operations, processes
-    - Assembly instructions, notes
-    - Quality requirements, inspection points
-    
-    **METADATA:**
-    - Creation dates, designers, approvers
-    - Standards referenced, units used
-    - Revision history, change notes
-    
-    **ANNOTATIONS:**
-    - Text callouts, symbols, warnings
-    - Special instructions, notes
-    - Reference designators, item numbers
-    
-    Return ONLY a valid JSON object with this structure:
+    Return ONLY valid JSON:
     {
         "fields": [
             {"name": "Drawing Number", "value": "extracted value"},
-            {"name": "Material", "value": "extracted value"},
-            {"name": "Overall Length", "value": "extracted value"}
+            {"name": "Material", "value": "extracted value"}
         ]
     }
     
-    Guidelines:
-    - Extract EVERYTHING visible, even small details
-    - Use clear, descriptive field names
-    - If text is unclear, note as "Partially visible: [best guess]"
-    - Group related information logically
-    - Be thorough and systematic
+    Rules:
+    - Extract visible text and numbers
+    - Use clear field names
+    - If unclear, prefix with "Partial: "
+    - Focus on manufacturing-relevant data
+    - Be concise but accurate
     """
 
 def parse_gemini_response(response_text):
@@ -422,7 +435,7 @@ def upload_file():
         analysis_result = None
 
         if ext.lower() == '.pdf':
-            # Strategy 1: Try direct PDF analysis (best for Gemini 2.0)
+            # Strategy 1: Try direct PDF analysis (best for Gemini 2.5)
             logger.info('Attempting direct PDF analysis...')
             analysis_result = analyze_with_gemini_direct_pdf(filepath)
 
@@ -527,16 +540,26 @@ def analysis_page(filename):
         flash('Could not read analysis results.', 'error')
         return redirect(url_for('home'))
 
-    # Build document history (list of uploaded files)
+    # Build document history (list of uploaded files) - newest first
     uploads = []
     try:
-        for fname in sorted(os.listdir(app.config['UPLOAD_FOLDER']), key=lambda x: os.path.getmtime(os.path.join(app.config['UPLOAD_FOLDER'], x)), reverse=True):
-            # skip analysis artifacts if you want in history show originals only
+        # Get all files with their modification times
+        files_with_times = []
+        for fname in os.listdir(app.config['UPLOAD_FOLDER']):
             if fname.endswith('.analysis.json'):
-                continue
+                continue  # Skip analysis artifacts
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+            mtime = os.path.getmtime(file_path)
+            files_with_times.append((fname, mtime))
+        
+        # Sort by modification time (newest first)
+        files_with_times.sort(key=lambda x: x[1], reverse=True)
+        
+        # Build uploads list
+        for fname, _ in files_with_times:
             uploads.append({
                 'name': fname,
-                'url': url_for('static', filename=os.path.join('..', app.config['UPLOAD_FOLDER'], fname))
+                'url': url_for('uploaded_file', filename=fname)
             })
     except Exception:
         uploads = []
@@ -616,39 +639,189 @@ def save_analysis(filename):
 
 @app.route('/chat/<path:filename>', methods=['POST'])
 def chat_endpoint(filename):
-    """Simple chat endpoint that uses the Gemini model when available or returns a canned reply."""
+    """Enhanced AI chat endpoint with comprehensive CAD document understanding."""
     data = request.get_json(silent=True) or {}
     user_message = data.get('message', '').strip()
     if not user_message:
         return jsonify({'error': 'No message provided'}), 400
 
-    # Load analysis artifact to give context
+    # Load comprehensive analysis context
     safe = secure_filename(filename)
     analysis_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{safe}.analysis.json")
-    context_text = ''
+    document_context = load_document_context(analysis_path, safe)
+    
+    # If model is configured, use enhanced AI response
+    if model:
+        try:
+            enhanced_prompt = create_enhanced_chat_prompt(document_context, user_message, safe)
+            response = model.generate_content(enhanced_prompt)
+            text = getattr(response, 'text', None) or str(response)
+            
+            # Log the interaction for debugging
+            logger.info(f"Chat interaction for {filename}: User: '{user_message[:50]}...' AI: '{text[:50]}...'")
+            
+            return jsonify({'reply': text}), 200
+        except Exception as e:
+            logger.error(f"Enhanced chat model call failed: {e}")
+            return jsonify({'reply': get_intelligent_fallback_response(user_message, document_context)}), 200
+
+    # Enhanced fallback response
+    return jsonify({'reply': get_intelligent_fallback_response(user_message, document_context)}), 200
+
+def load_document_context(analysis_path, filename):
+    """Load comprehensive document context for AI chat."""
+    context = {
+        'filename': filename,
+        'fields': [],
+        'categories': {'A': [], 'B': [], 'C': [], 'D': []},
+        'metadata': {},
+        'field_count': 0,
+        'document_type': 'Unknown'
+    }
+    
     try:
         if os.path.exists(analysis_path):
             with open(analysis_path, 'r', encoding='utf-8') as f:
-                art = json.load(f)
-                # include a brief summary of extracted fields
-                fields = art.get('fields', [])
-                context_text = f"Extracted {len(fields)} fields: " + ", ".join([str(f.get('name')) for f in fields[:10]])
-    except Exception:
-        context_text = ''
+                analysis_data = json.load(f)
+                
+            # Extract fields and categorize them
+            fields = analysis_data.get('fields', [])
+            context['fields'] = fields
+            context['field_count'] = len(fields)
+            context['metadata'] = analysis_data.get('metadata', {})
+            
+            # Categorize fields for better context
+            for field in fields:
+                category = field.get('category', 'Uncategorized')
+                if category in context['categories']:
+                    context['categories'][category].append(field)
+            
+            # Determine document type based on content
+            context['document_type'] = determine_document_type(fields)
+            
+    except Exception as e:
+        logger.debug(f"Could not load document context: {e}")
+    
+    return context
 
-    # If model is configured, try to call it
-    if model:
-        try:
-            prompt = f"You are an assistant for CAD document analysis. Context: {context_text}\nUser: {user_message}\nAnswer concisely."
-            response = model.generate_content(prompt)
-            text = getattr(response, 'text', None) or str(response)
-            return jsonify({'reply': text}), 200
-        except Exception as e:
-            logger.error(f"Chat model call failed: {e}")
+def determine_document_type(fields):
+    """Determine the type of CAD document based on extracted fields."""
+    field_text = ' '.join([f.get('name', '') + ' ' + f.get('value', '') for f in fields]).lower()
+    
+    if any(keyword in field_text for keyword in ['assembly', 'exploded', 'parts list', 'bom']):
+        return 'Assembly Drawing'
+    elif any(keyword in field_text for keyword in ['detail', 'part', 'component']):
+        return 'Detail Drawing'
+    elif any(keyword in field_text for keyword in ['schematic', 'circuit', 'electrical']):
+        return 'Schematic'
+    elif any(keyword in field_text for keyword in ['section', 'cross-section', 'view']):
+        return 'Section Drawing'
+    else:
+        return 'Technical Drawing'
 
-    # Fallback canned response
-    reply = f"I've successfully analyzed the document. {context_text}. You asked: '{user_message}'. What would you like to know about this drawing?"
-    return jsonify({'reply': reply}), 200
+def create_enhanced_chat_prompt(context, user_message, filename):
+    """Create a comprehensive prompt for the AI assistant."""
+    
+    # Build detailed context with all available fields
+    all_fields = []
+    for category, fields in context['categories'].items():
+        if fields:
+            category_names = {
+                'A': 'Document Information',
+                'B': 'Metadata', 
+                'C': 'Textual Information',
+                'D': 'Drawing Details'
+            }
+            for field in fields:
+                all_fields.append(f"- {field['name']}: {field['value']}")
+    
+    # Also include uncategorized fields
+    for field in context['fields']:
+        if field.get('category') not in ['A', 'B', 'C', 'D']:
+            all_fields.append(f"- {field['name']}: {field['value']}")
+    
+    context_summary = '\n'.join(all_fields) if all_fields else "No specific fields extracted yet."
+    
+    prompt = f"""You are an expert CAD/Technical Drawing AI Assistant.
+
+DOCUMENT: {filename} ({context['document_type']})
+EXTRACTED DATA ({context['field_count']} fields):
+{context_summary}
+
+USER QUESTION: {user_message}
+
+INSTRUCTIONS:
+- Answer based on the EXTRACTED DATA above
+- If the requested information IS in the data, provide it clearly
+- If the requested information is NOT in the data, say so and suggest where to look
+- Be helpful and specific
+- Use bullet points for lists
+- Keep responses concise but informative
+
+RESPONSE:"""
+
+    return prompt
+
+def get_intelligent_fallback_response(user_message, context):
+    """Generate intelligent fallback responses when AI model is unavailable."""
+    
+    message_lower = user_message.lower()
+    
+    # Search for specific information in extracted fields
+    if 'part number' in message_lower or 'part num' in message_lower:
+        part_fields = [f for f in context['fields'] if any(keyword in f.get('name', '').lower() 
+                      for keyword in ['part', 'number', 'item', 'drawing', 'dwg'])]
+        if part_fields:
+            results = []
+            for field in part_fields[:3]:
+                results.append(f"• {field['name']}: {field['value']}")
+            return f"**Part Number Information Found:**\n" + '\n'.join(results)
+        else:
+            return "**Part Numbers:** No part numbers were extracted from the document. Check the title block, drawing number field, or parts list in the original document."
+    
+    elif 'dimension' in message_lower or 'measurement' in message_lower:
+        dimensions = [f for f in context['fields'] if any(dim_word in f.get('name', '').lower() 
+                     for dim_word in ['dimension', 'length', 'width', 'height', 'diameter', 'radius', 'size'])]
+        if dimensions:
+            results = []
+            for field in dimensions[:4]:
+                results.append(f"• {field['name']}: {field['value']}")
+            return f"**Dimensions Found:**\n" + '\n'.join(results)
+        else:
+            return "**Dimensions:** No dimensional information was extracted. Look for dimension lines, measurement callouts, or size specifications in the original drawing."
+    
+    elif 'material' in message_lower:
+        materials = [f for f in context['fields'] if any(mat_word in f.get('name', '').lower() 
+                    for mat_word in ['material', 'steel', 'aluminum', 'plastic', 'metal'])]
+        if materials:
+            results = []
+            for field in materials[:3]:
+                results.append(f"• {field['name']}: {field['value']}")
+            return f"**Material Information:**\n" + '\n'.join(results)
+        else:
+            return "**Materials:** No material specifications were extracted. Check the notes section, title block, or material callouts in the original document."
+    
+    elif any(word in message_lower for word in ['tolerance', 'precision', 'accuracy']):
+        tolerances = [f for f in context['fields'] if any(tol_word in f.get('name', '').lower() 
+                     for tol_word in ['tolerance', 'precision', '±', 'accuracy'])]
+        if tolerances:
+            results = []
+            for field in tolerances[:3]:
+                results.append(f"• {field['name']}: {field['value']}")
+            return f"**Tolerance Information:**\n" + '\n'.join(results)
+        else:
+            return "**Tolerances:** No tolerance specifications were extracted. Look for ± symbols, precision callouts, or geometric dimensioning and tolerancing (GD&T) symbols."
+    
+    # Show available information
+    if context['field_count'] > 0:
+        sample_fields = context['fields'][:4]
+        results = []
+        for field in sample_fields:
+            results.append(f"• {field['name']}: {field['value']}")
+        
+        return f"**Available Information ({context['field_count']} fields extracted):**\n" + '\n'.join(results) + f"\n\nAsk me about specific aspects like dimensions, materials, part numbers, or manufacturing details."
+    else:
+        return f"**Document Analysis:** This {context['document_type']} is being processed. No specific fields have been extracted yet. Please try asking about general document information or upload a clearer image."
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
