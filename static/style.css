@@ -794,4 +794,75 @@ cument History Improvements */
   #docHistory .text-xs {
     font-size: 0.75rem;
   }
+}/* Analy
+sis Page Layout Improvements */
+.analysis-page {
+  min-height: calc(100vh - 4rem);
+}
+
+/* Ensure all columns have the same height */
+.analysis-page > aside,
+.analysis-page > section {
+  height: calc(100vh - 8rem);
+  max-height: calc(100vh - 8rem);
+}
+
+/* Document History specific improvements */
+.analysis-page > aside:first-child .bg-white {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.analysis-page > aside:first-child .overflow-y-auto {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Better scrolling for document history */
+#docHistory {
+  max-height: calc(100vh - 12rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+#docHistory::-webkit-scrollbar {
+  width: 6px;
+}
+
+#docHistory::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#docHistory::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 3px;
+}
+
+#docHistory::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* Enhanced document history cards */
+#docHistory .p-3 {
+  transition: all 0.2s ease;
+}
+
+#docHistory .p-3:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .analysis-page > aside,
+  .analysis-page > section {
+    height: auto;
+    max-height: none;
+  }
+  
+  .analysis-page > aside:first-child .bg-white {
+    height: auto;
+  }
 }
