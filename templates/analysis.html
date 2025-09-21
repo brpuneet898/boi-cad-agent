@@ -44,6 +44,22 @@
           </header>
           
           <div class="p-4">
+            <!-- Search Input -->
+            <div class="mb-4">
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="searchInput" 
+                  placeholder="Search files..." 
+                  class="w-full px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                  autocomplete="off"
+                >
+                <svg class="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+            </div>
+            
             <div id="docHistory" class="space-y-3 max-h-96 overflow-y-auto">
               {% for u in uploads %}
               <div class="p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition-colors border border-gray-100 hover:border-blue-200 hover:shadow-md">
@@ -113,6 +129,24 @@
           </header>
           
           <div class="p-6">
+            <!-- Search Input for Fields -->
+            <div class="mb-6">
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="fieldsSearchInput" 
+                  placeholder="Search extracted fields..." 
+                  class="w-full px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                  autocomplete="off"
+                >
+                <svg class="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <div class="absolute right-3 top-2.5 text-xs text-gray-400 hidden" id="fieldsSearchCount">
+                  <span id="visibleFieldsCount">0</span> of <span id="totalFieldsCount">0</span>
+                </div>
+              </div>
+            </div>
             <!-- Section A: Basic Document Information -->
             <div class="mb-8">
               <div class="flex items-center mb-4">
@@ -466,17 +500,103 @@
         addQuickReplies();
       }, 1000);
 
+      // Search functionality for document history
+      const searchInput = document.getElementById('searchInput');
+      const docHistoryItems = document.querySelectorAll('#docHistory > div');
+      
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase().trim();
+          
+          docHistoryItems.forEach(item => {
+            const fileName = item.querySelector('.font-medium')?.textContent?.toLowerCase() || '';
+            
+            if (fileName.includes(searchTerm) || searchTerm === '') {
+              item.style.display = 'block';
+              // Add fade-in animation
+              item.style.opacity = '0';
+              item.style.transform = 'translateY(10px)';
+              setTimeout(() => {
+                item.style.transition = 'all 0.3s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+              }, 50);
+            } else {
+              item.style.display = 'none';
+            }
+          });
+          
+          // Show "no results" message if no items are visible
+          const visibleItems = Array.from(docHistoryItems).filter(item => 
+            item.style.display !== 'none'
+          );
+          
+          // Remove existing no-results message
+          const existingNoResults = document.getElementById('noResultsMessage');
+          if (existingNoResults) {
+            existingNoResults.remove();
+          }
+          
+          if (visibleItems.length === 0 && searchTerm !== '') {
+            const noResultsDiv = document.createElement('div');
+            noResultsDiv.id = 'noResultsMessage';
+            noResultsDiv.className = 'text-sm text-gray-500 p-6 text-center bg-gray-50 rounded-lg';
+            noResultsDiv.innerHTML = `
+              <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <div class="font-medium text-gray-700 mb-1">No files found</div>
+              <div class="text-xs text-gray-500">Try a different search term</div>
+            `;
+            document.getElementById('docHistory').appendChild(noResultsDiv);
+          }
+        });
+        
+        // Clear search functionality
+        searchInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            this.value = '';
+            this.dispatchEvent(new Event('input'));
+            this.blur();
+          }
+        });
+      }
+
       // Field editing functionality
       let fieldsData = {{ analysis.fields | tojson }};
       let hasUnsavedChanges = false;
       let fieldCounter = 0;
 
-      // Field categorization keywords
+      // Enhanced field categorization keywords
       const categoryKeywords = {
-        'A': ['drawing number', 'part number', 'document id', 'doc name', 'version', 'revision', 'title', 'name', 'id', 'number', 'components', 'parts count', 'assembly', 'catalog', 'item', 'model'],
-        'B': ['created', 'modified', 'author', 'designer', 'engineer', 'department', 'company', 'date', 'time', 'approved', 'checked', 'drawn by', 'edited', 'updated', 'organization'],
-        'C': ['notes', 'comments', 'description', 'text', 'annotation', 'table', 'history', 'remarks', 'specification', 'material', 'finish', 'treatment', 'composition', 'chemical', 'properties'],
-        'D': ['dimension', 'measurement', 'length', 'width', 'height', 'diameter', 'radius', 'angle', 'tolerance', 'units', 'mm', 'inches', 'scale', 'coordinates', 'position', 'location']
+        'A': [
+          // Document identification
+          'drawing number', 'part number', 'document id', 'doc name', 'version', 'revision', 'title', 'name', 'id', 'number', 
+          'components', 'parts count', 'assembly', 'catalog', 'item', 'model', 'sheet', 'page', 'dwg', 'project code', 
+          'job number', 'work order', 'file reference', 'document title', 'part name', 'assembly name'
+        ],
+        'B': [
+          // Metadata & authorship
+          'created', 'modified', 'author', 'designer', 'engineer', 'department', 'company', 'date', 'time', 'approved', 
+          'checked', 'drawn by', 'edited', 'updated', 'organization', 'drafter', 'checker', 'approver', 'standard', 
+          'iso', 'ansi', 'din', 'division', 'vendor', 'supplier', 'manufacturer'
+        ],
+        'C': [
+          // Textual information & specifications
+          'notes', 'comments', 'description', 'text', 'annotation', 'table', 'history', 'remarks', 'specification', 
+          'material', 'finish', 'treatment', 'composition', 'chemical', 'properties', 'grade', 'astm', 'sae', 
+          'surface', 'coating', 'hardness', 'heat treatment', 'weight', 'density', 'manufacturing', 'process', 
+          'welding', 'machining', 'assembly', 'installation', 'quality', 'inspection', 'warning', 'safety', 
+          'caution', 'requirement', 'constraint', 'regulation', 'code', 'electrical', 'voltage', 'current', 
+          'power', 'pressure', 'temperature', 'flow', 'capacity', 'performance', 'serial', 'lot', 'batch'
+        ],
+        'D': [
+          // Dimensions & geometric data
+          'dimension', 'measurement', 'length', 'width', 'height', 'diameter', 'radius', 'angle', 'tolerance', 
+          'units', 'mm', 'inches', 'scale', 'coordinates', 'position', 'location', 'gdt', 'geometric', 'datum', 
+          'centerline', 'view', 'section', 'detail', 'top', 'front', 'side', 'hidden', 'construction', 'symbol', 
+          'pattern', 'coordinate system', 'reference', 'overall', 'partial', 'total'
+        ]
       };
 
       // Initialize the categorized display
@@ -491,6 +611,116 @@
         
         // Populate sections
         populateAllSections();
+        
+        // Initialize fields search
+        initializeFieldsSearch();
+      }
+
+      // Fields search functionality
+      function initializeFieldsSearch() {
+        const fieldsSearchInput = document.getElementById('fieldsSearchInput');
+        const fieldsSearchCount = document.getElementById('fieldsSearchCount');
+        const visibleFieldsCount = document.getElementById('visibleFieldsCount');
+        const totalFieldsCount = document.getElementById('totalFieldsCount');
+        
+        if (!fieldsSearchInput) return;
+        
+        // Update total count
+        totalFieldsCount.textContent = fieldsData.length;
+        
+        fieldsSearchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase().trim();
+          let visibleCount = 0;
+          
+          // Search through all sections
+          ['A', 'B', 'C', 'D', 'Uncategorized'].forEach(section => {
+            const sectionContainer = document.getElementById(`section${section}`);
+            if (!sectionContainer) return;
+            
+            const sectionDiv = sectionContainer.closest('.mb-8');
+            let sectionHasVisibleFields = false;
+            
+            // Search through fields in this section
+            const fieldItems = sectionContainer.querySelectorAll('.field-item');
+            fieldItems.forEach(fieldItem => {
+              const fieldIndex = parseInt(fieldItem.dataset.fieldIndex);
+              const field = fieldsData[fieldIndex];
+              
+              if (field) {
+                const fieldText = (field.name + ' ' + field.value).toLowerCase();
+                const isVisible = fieldText.includes(searchTerm) || searchTerm === '';
+                
+                if (isVisible) {
+                  fieldItem.style.display = 'block';
+                  fieldItem.style.opacity = '0';
+                  fieldItem.style.transform = 'translateY(10px)';
+                  setTimeout(() => {
+                    fieldItem.style.transition = 'all 0.3s ease';
+                    fieldItem.style.opacity = '1';
+                    fieldItem.style.transform = 'translateY(0)';
+                  }, 50);
+                  visibleCount++;
+                  sectionHasVisibleFields = true;
+                } else {
+                  fieldItem.style.display = 'none';
+                }
+              }
+            });
+            
+            // Show/hide entire section based on whether it has visible fields
+            if (sectionDiv) {
+              if (sectionHasVisibleFields || searchTerm === '') {
+                sectionDiv.style.display = 'block';
+              } else {
+                sectionDiv.style.display = 'none';
+              }
+            }
+          });
+          
+          // Update search count
+          visibleFieldsCount.textContent = visibleCount;
+          if (searchTerm !== '') {
+            fieldsSearchCount.classList.remove('hidden');
+          } else {
+            fieldsSearchCount.classList.add('hidden');
+          }
+          
+          // Show "no results" message if needed
+          showFieldsNoResults(visibleCount === 0 && searchTerm !== '');
+        });
+        
+        // Clear search on escape
+        fieldsSearchInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            this.value = '';
+            this.dispatchEvent(new Event('input'));
+            this.blur();
+          }
+        });
+      }
+      
+      function showFieldsNoResults(show) {
+        const existingNoResults = document.getElementById('fieldsNoResultsMessage');
+        if (existingNoResults) {
+          existingNoResults.remove();
+        }
+        
+        if (show) {
+          const noResultsDiv = document.createElement('div');
+          noResultsDiv.id = 'fieldsNoResultsMessage';
+          noResultsDiv.className = 'text-center py-8 text-gray-500';
+          noResultsDiv.innerHTML = `
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <div class="text-lg font-medium text-gray-700 mb-2">No fields found</div>
+            <div class="text-sm text-gray-500">Try a different search term or add new fields</div>
+          `;
+          
+          // Insert after the search input
+          const searchContainer = document.getElementById('fieldsSearchInput').closest('.mb-6');
+          searchContainer.insertAdjacentElement('afterend', noResultsDiv);
+        }
       }
 
       function categorizeField(name, value) {
