@@ -304,32 +304,106 @@ def analyze_with_gemini_image(image_path):
         return {"fields": [{"name": "Error", "value": f"Image analysis failed: {str(e)}"}]}
 
 def get_analysis_prompt():
-    """Optimized CAD analysis prompt for speed"""
+    """Comprehensive CAD analysis prompt for maximum data extraction"""
     return """
-    Extract key information from this CAD/technical drawing. Focus on the most important data.
-    
-    EXTRACT:
-    - Drawing/part numbers, revisions
-    - Dimensions, measurements, tolerances  
-    - Materials, specifications
-    - Manufacturing notes, processes
-    - Designer info, dates, standards
-    - Text annotations, symbols
-    
-    Return ONLY valid JSON:
+    You are an expert CAD analyst. Extract ALL visible information from this technical drawing/document with extreme thoroughness.
+
+    EXTRACT EVERYTHING YOU SEE - BE COMPREHENSIVE:
+
+    📋 DOCUMENT IDENTIFICATION:
+    - Drawing numbers, part numbers, model numbers, item codes
+    - Revision letters/numbers, version info, document IDs
+    - Sheet numbers, page references, drawing scales
+    - Document titles, part names, assembly names
+    - Project codes, job numbers, work order numbers
+
+    👥 METADATA & AUTHORSHIP:
+    - Designer/drafter names, engineers, checkers, approvers
+    - Company names, departments, divisions
+    - Creation dates, modification dates, approval dates
+    - Drawing standards (ISO, ANSI, DIN, etc.)
+    - File references, related drawing numbers
+
+    📐 DIMENSIONS & MEASUREMENTS:
+    - ALL dimensions with units (mm, inches, etc.)
+    - Tolerances (±, GD&T symbols, geometric tolerances)
+    - Angles, radii, diameters, lengths, widths, heights
+    - Coordinate dimensions, reference dimensions
+    - Scale factors, zoom levels, view scales
+
+    🔧 MATERIALS & SPECIFICATIONS:
+    - Material types, grades, specifications (steel, aluminum, plastic, etc.)
+    - Material standards (ASTM, SAE, etc.)
+    - Surface finishes, coatings, treatments
+    - Hardness requirements, heat treatment specs
+    - Weight, density, material properties
+
+    🏭 MANUFACTURING & PROCESSES:
+    - Machining operations, processes, methods
+    - Welding symbols, joint types, weld specifications
+    - Assembly instructions, installation notes
+    - Quality requirements, inspection criteria
+    - Manufacturing tolerances, process notes
+
+    📝 TEXT & ANNOTATIONS:
+    - ALL visible text, notes, comments, callouts
+    - Table data, bills of materials, parts lists
+    - Specifications, requirements, constraints
+    - Warning labels, safety notes, cautions
+    - Reference standards, codes, regulations
+
+    🔢 TECHNICAL DATA:
+    - Quantities, counts, multipliers
+    - Electrical specifications (voltage, current, power)
+    - Pressure ratings, temperature ranges
+    - Flow rates, capacities, performance data
+    - Serial numbers, lot numbers, batch codes
+
+    📍 GEOMETRIC INFORMATION:
+    - View types (top, front, side, section, detail)
+    - Section markers, detail callouts, view labels
+    - Centerlines, construction lines, hidden lines
+    - Symbols, geometric features, patterns
+    - Coordinate systems, datum references
+
+    💰 COST & PROCUREMENT:
+    - Vendor information, supplier codes
+    - Cost estimates, pricing data
+    - Lead times, delivery schedules
+    - Purchase order numbers, requisitions
+    - Inventory codes, stock numbers
+
+    Return comprehensive JSON with ALL extracted data:
     {
         "fields": [
-            {"name": "Drawing Number", "value": "extracted value"},
-            {"name": "Material", "value": "extracted value"}
+            {"name": "Drawing Number", "value": "DWG-12345-Rev-C"},
+            {"name": "Part Name", "value": "Motor Housing Assembly"},
+            {"name": "Material", "value": "6061-T6 Aluminum Alloy"},
+            {"name": "Overall Length", "value": "125.5 ± 0.1 mm"},
+            {"name": "Designer", "value": "John Smith"},
+            {"name": "Date Created", "value": "2024-01-15"},
+            {"name": "Scale", "value": "1:2"},
+            {"name": "Surface Finish", "value": "Ra 1.6 μm"},
+            {"name": "Tolerance Class", "value": "IT7"},
+            {"name": "Manufacturing Process", "value": "CNC Machining"},
+            {"name": "Quality Standard", "value": "ISO 9001"},
+            {"name": "Weight", "value": "2.3 kg"},
+            {"name": "Note 1", "value": "All dimensions in millimeters unless noted"},
+            {"name": "Vendor Code", "value": "SUPP-001-ALU"}
         ]
     }
-    
-    Rules:
-    - Extract visible text and numbers
-    - Use clear field names
-    - If unclear, prefix with "Partial: "
-    - Focus on manufacturing-relevant data
-    - Be concise but accurate
+
+    CRITICAL RULES:
+    - Extract EVERY piece of visible text and data
+    - Include units with all measurements
+    - Capture partial/unclear data with "Partial: " prefix
+    - Use descriptive field names that explain what the data represents
+    - Include table data, lists, and structured information
+    - Don't skip small text, symbols, or annotations
+    - Extract data from title blocks, revision blocks, notes sections
+    - Include geometric dimensioning and tolerancing (GD&T) symbols
+    - Capture all manufacturing and quality specifications
+    - Be extremely thorough - aim for 20-50+ fields per drawing
     """
 
 def parse_gemini_response(response_text):
