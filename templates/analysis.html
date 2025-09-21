@@ -152,7 +152,7 @@
               <div class="flex items-center mb-4">
                 <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">A</div>
                 <div>
-                  <h3 class="text-lg font-semibold text-gray-900">Basic Document Information</h3>
+                  <h3 class="text-lg font-semibold text-gray-900">Document Information</h3>
                   <p class="text-sm text-gray-600">Standardized for our Catalog & Summary Information</p>
                 </div>
               </div>
@@ -171,7 +171,7 @@
               <div class="flex items-center mb-4">
                 <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">B</div>
                 <div>
-                  <h3 class="text-lg font-semibold text-gray-900">Basic Metadata</h3>
+                  <h3 class="text-lg font-semibold text-gray-900">Audit Log</h3>
                   <p class="text-sm text-gray-600">Who edited, when, departments, etc. - Details</p>
                 </div>
               </div>
@@ -180,7 +180,7 @@
                   <!-- Fields will be populated here -->
                 </div>
                 <button onclick="addFieldToSection('B')" class="mt-3 text-sm text-green-600 hover:text-green-800 font-medium">
-                  + Add Metadata Field
+                  + Add Audit Log Field
                 </button>
               </div>
             </div>
@@ -915,7 +915,7 @@
                     <select onchange="moveFieldToCategory(${index}, this.value)" class="text-xs border border-gray-300 rounded px-2 py-1 mr-2">
                       <option value="Uncategorized">Move to...</option>
                       <option value="A">📋 Document Info</option>
-                      <option value="B">📊 Metadata</option>
+                      <option value="B">📊 Audit Log</option>
                       <option value="C">📝 Textual Info</option>
                       <option value="D">📐 Drawing Details</option>
                     </select>
